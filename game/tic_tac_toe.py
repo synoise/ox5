@@ -50,7 +50,7 @@ def checkLines(BOARD_DIM1):
             if 3 < i < BOARD_DIM1 and j < BOARD_DIM1 - 4:
                 tab.append([ d, d - BOARD_DIM1 + 1, d - BOARD_DIM1 * 2 + 2, d - BOARD_DIM1 * 3 + 3, d - BOARD_DIM1 * 4 + 4])  # rows
 
-    for i in range(BOARD_DIM1**2 - 80):
+    for i in range(BOARD_DIM1**2 - BOARD_DIM1*4):
         tab.append([i, i + BOARD_DIM1, i + BOARD_DIM1 * 2, i + BOARD_DIM1 * 3, i + BOARD_DIM1 * 4])  # cols
 
     # if j < BOARD_DIM1 - 5 and i < BOARD_DIM1 - 5:

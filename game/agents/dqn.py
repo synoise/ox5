@@ -1,15 +1,16 @@
 import random
 import numpy as np
-# import tensorflow as tf
+import tensorflow as tf
 from collections import deque
 from tensorflow import keras
 from keras import layers
-# from tensorflow.keras import layers
+
 import codecs
 from ..game import Agent
 from ..tic_tac_toe import TicTacToeGame, TicTacToeAction, GamePlayer, BOARD_SIZE, BOARD_DIM
-from keras.models import load_model
-
+# from keras.models import load_model
+from tensorflow import keras
+# from tensorflow.keras import layers
 
 def lerp(v, d):
     return v[0] * (1 - d) + v[1] * d
@@ -65,11 +66,8 @@ class DQNAgent(Agent):
             self.update_target_model()  # Sync weights
 
     def loadModel(self, path):
-        # self.model = load_model(path)
-        # self.model.saving.load_model
-        self.model.load_model(path)
-        # with gzip.open(path, 'rb') as f:
-        #     self.model = keras.models.load_model(f)
+        self.model = keras.models.load_model(path)
+        # self.model.saving.load_model(path)
 
     def saveModel(self, path):
         self.model.save(path)
@@ -111,8 +109,6 @@ class DQNAgent(Agent):
         else:
             return self.award2(game.board.tolist(), i_action,game.board[i_action] )
 
-
-
     def mini(self,N, mi):
         if N >= mi + BOARD_DIM:
             return False
@@ -123,20 +119,30 @@ class DQNAgent(Agent):
             return False
         return N
 
-    def getRow(param, param1, param2, param3, tab, agent):
+    def getRow(self,param, param1, param2, param3, tab, agent):
+        try:
+            if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+                return 1
+        except:
+            return 0
+        try:
+            if tab[param] == tab[param1] == tab[param2] == agent:
+                return 0.0001
+        except:
+            return 0
+        try:
+            if(tab[param] == tab[param1] == agent):
+                return 1e-08
+        except:
+            return 0
+        try:
+            if(tab[param] == agent):
+                return 1e-12
+        except:
+            return 0
 
-        if param3 and tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
-            return 1
-
-        if param2 and tab[param] == tab[param1] == tab[param2] == agent:
-            return 0.0001
-
-        if param1 and tab[param] == tab[param1] == agent:
-            return 1e-08
-
-        if param and tab[param] == agent:
-            return 1e-12
         return 0
+
         # try:
         # except:
     #
@@ -169,13 +175,9 @@ class DQNAgent(Agent):
         mi = cell // BOARD_DIM * BOARD_DIM
         award = 0
 
-        award += self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),
-                        self.mini(cell + 4, mi), tab, agent)
-        award += self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),
-                        self.maxi(cell - 4, mi), tab, agent)
-        award += self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),
-                        self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),
-                        tab, agent)
+        award += self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent)
+        award += self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent)
+        award += self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent)
         award += self.getRow(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
                         self.maxi(cell - 3 * BOARD_DIM, 0),
                         self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent)
@@ -338,5 +340,4 @@ class DQNAgent(Agent):
             action = self.get_action(np.argmax(legal_actions * q_values - (legal_actions - 1) * illegal_value))
 
         self.prepare_log(game, action)
-        # print(game.__str__())
         return game.next(action)

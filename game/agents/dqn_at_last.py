@@ -9,16 +9,12 @@ from tensorflow import keras
 from . import DQNAgent
 from ..game import Agent
 from ..tic_tac_toe import TicTacToeGame, TicTacToeAction, GamePlayer, BOARD_SIZE, BOARD_DIM
-
 from keras.models import load_model
-
 
 def lerp(v, d):
     return v[0] * (1 - d) + v[1] * d
 
-
-class DQNAgentOffen(DQNAgent):
-
+class DQNAgentAtLast(DQNAgent):
 
     # def get_legal_actions(self, game_state):
     #     return game_state[0::3]
