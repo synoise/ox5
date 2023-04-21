@@ -6,8 +6,9 @@ from collections import Counter
 from IPython import display
 # from .boardox import BoardOX
 from .game import Game, Agent
+from .tic_tac_toe import agent_id_to_char, GamePlayer
 
-
+agent_signs: list[GamePlayer] = [GamePlayer.NAUGHT, GamePlayer.CROSS]
 def play_game(game: Game, agents: List[Agent]) -> List[int]:
     for agent in agents:
         agent.new_game(game)
@@ -24,20 +25,22 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
     return game.get_winners()
 
 
+
 def play_games(create_game: Callable[[], Game], agents: List[Agent],
                n_games: int = 10000, debug: bool = False,
-               plot: bool = False, plot_window: int = 20, plot_update_n_games: int = 20) -> List[int]:
+               plot: bool = False, plot_window: int = 20, plot_update_n_games: int = 50) -> List[int]:
     results = []
 
     for i in range(n_games):
         game = create_game()
+       
         winners = play_game(game, agents)
         if len(winners) > 1:
             results.append(-1)
         else:
             results.append(winners[0])
 
-        print("_________________________________________________     i:", i,"  ___winer",winners[0],"--",winners)
+        print("_________________________________________________    epoka:", i,", winer",  agent_id_to_char(agent_signs[winners[0]]), " :: ", winners)
         # border.on_button_click(i,3)
         if plot and ((i + 1) % plot_update_n_games == 0 or i == n_games - 1):
             display.clear_output(wait=True)
@@ -75,8 +78,8 @@ def plot_game_results(results: List[int], num_agents: int, window: int = 100):
     winners = [moving_count(results, i, window) for i in range(num_agents)]
     plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
     plt.plot(game_number, draws, label='Draw')
-    for i, winner in enumerate(winners, start=1):
-        plt.plot(game_number, winner, label='Player ' + str(i) + ' wins')
+    for i, winner in enumerate(winners, start=0):
+        plt.plot(game_number, winner, label= 'Agent ' + str(i) + " :: " + agent_id_to_char(agent_signs[i]) + ' wins')
     plt.ylabel(f'Rate over trailing window of {window} games')
     plt.xlabel('Game number')
     plt.xlim([0, len(results)])

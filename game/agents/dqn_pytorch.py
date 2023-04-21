@@ -52,8 +52,7 @@ class DQNAgentPytorch(DQNAgent):
         self.n_inputs = 3 * BOARD_SIZE
         self.n_actions = BOARD_SIZE
         self.memory = deque(maxlen=memory_size)
-        self.sizeL = 4
-        self.sizeR = 5
+
         self.maxLen = BOARD_DIM * BOARD_DIM
         self.maxLen2 = self.maxLen - BOARD_DIM
 
@@ -66,31 +65,20 @@ class DQNAgentPytorch(DQNAgent):
         self.optimizer = optim.Adam(self.q_network.parameters(), lr=learning_rate)
 
         if self.double_dqn:
-            self.update_target_network()  # Sync weights
+            self.update_target_model()  # Sync weights
 
-    def get_model(self):
-        model = nn.Sequential(
-            nn.Linear(self.n_inputs, self.sizeL),
-            nn.ReLU(),
-            nn.Linear(self.sizeL, self.sizeR),
-            nn.ReLU(),
-            nn.Linear(self.sizeR, self.n_actions)
-        )
-        return model
 
-    def update_target_network(self):
-        self.target_network.load_state_dict(self.q_network.state_dict())
+    # def loadModel(self, path):
+    #     self.q_network.load_state_dict(torch.load(path))
 
-    def loadModel(self, path):
-        self.q_network.load_state_dict(torch.load(path))
+    # def saveModel(self, path):
+    #     torch.save(self.q_network.state_dict(), path)
 
-    def saveModel(self, path):
-        torch.save(self.q_network.state_dict(), path)
+    # def new_game(self, game):
+    #     self.num_games += 1
+    #     self.stage = None
+    #     self.game_log = []
 
-    def new_game(self, game):
-        self.num_games += 1
-        self.stage = None
-        self.game_log = []
 
     def end_game(self, game):
         if not self.is_learning:
@@ -108,7 +96,7 @@ class DQNAgentPytorch(DQNAgent):
         if self.epsilon > self.epsilon_end:
             self.epsilon -= self.epsilon_decay_linear
 
-    def select_action(self, game: TicTacToeGame, player: GamePlayer) -> TicTacToeAction:
+    def get_action_index(self, game: TicTacToeGame, player: GamePlayer) -> TicTacToeAction:
         if not self.is_learning:
             return self.select_best_action(game, player)
 
@@ -145,6 +133,27 @@ class DQNAgentPytorch(DQNAgent):
                     state[i * BOARD_DIM + j + self.maxLen] = 1
         return state
 
+    def get_model(self):
+        model = nn.Sequential(
+            nn.Linear(self.n_inputs, self.sizeL),
+            nn.ReLU(),
+            nn.Linear(self.sizeL, self.sizeR),
+            nn.ReLU(),
+            nn.Linear(self.sizeR, self.n_actions)
+        )
+        return model
+    def update_target_model(self):
+        self.target_network.load_state_dict(self.q_network.state_dict())
+
+
+    def get_model_inputs(self, game: TicTacToeGame):
+        return 0.000001
+
+    # def get_action_index(self, action: TicTacToeAction):
+
+    # def get_legal_actions(self, game_state):
+
+    # def prepare_log(self, game: TicTacToeGame, action: TicTacToeAction):
     def commit_log(self, game: TicTacToeGame, is_game_over):
         player = self.player
         reward = 0
@@ -188,3 +197,5 @@ class DQNAgentPytorch(DQNAgent):
         loss = self.loss_function(predictions, q_values)
         loss.backward()
         self.optimizer.step()
+
+        # def next(self, game: TicTacToeGame) -> bool:

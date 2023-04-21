@@ -57,6 +57,8 @@ class DQNAgent(Agent):
         self.memory = deque(maxlen=memory_size)
         self.maxLen = BOARD_DIM * BOARD_DIM
         self.maxLen2 = self.maxLen - BOARD_DIM
+
+        self.pre_action = BOARD_DIM * BOARD_DIM
         random.seed(seed)
 
         self.model = self.get_model()
@@ -203,7 +205,73 @@ class DQNAgent(Agent):
 
         return award / 10
 
+    def getRow(self,param, param1, param2, param3, tab, agent):
+        try:
+            if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+                return 1
+        except:
+            return 0
+        try:
+            if tab[param] == tab[param1] == tab[param2] == agent:
+                return 0.0001
+        except:
+            return 0
+        try:
+            if(tab[param] == tab[param1] == agent):
+                return 1e-08
+        except:
+            return 0
+        try:
+            if(tab[param] == agent):
+                return 1e-12
+        except:
+            return 0
 
+        return 0
+
+    # def getCloest(self, param, param1, param2, param3, tab, agent):
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+    #             return 1
+    #     except:
+    #         return 0
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+    #             return 0.0001
+    #     except:
+    #         return 0
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+    #             return 1e-08
+    #     except:
+    #         return 0
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+    #             return 1e-12
+    #     except:
+    #         return 0
+    #
+    #     return 0
+    # def getCloestElement(self, cell, tab,agent):
+    #     mi = cell // BOARD_DIM * BOARD_DIM
+    #     award = 0
+    #     award = [self.mini(cell + 1, mi),self.maxi(cell - 1, mi),self.mini(cell + BOARD_DIM, self.maxLen2),self.maxi(cell - BOARD_DIM, 0),
+    #              self.mini(cell + BOARD_DIM + 1,self.maxi(cell + BOARD_DIM - 1,self.maxi(self.mini(cell - BOARD_DIM + 1,
+    #              self.maxi(cell - BOARD_DIM - 1, 0),
+    #
+    #
+    #
+    #     award=[
+    #     self.getCloest(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent),
+    #     self.getCloest(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent),
+    #     self.getCloest(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent),
+    #     self.getCloest(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),self.maxi(cell - 3 * BOARD_DIM, 0),self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent),
+    #     self.getCloest(self.mini(cell + BOARD_DIM + 1, self.maxLen2), self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2), tab, agent),
+    #     self.getCloest(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),tab, agent),
+    #     self.getCloest(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0), self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0), tab, agent),
+    #     self.getCloest(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0), self.maxi(cell - 3 * BOARD_DIM - 3, 0), self.maxi(cell - 4 * BOARD_DIM - 4, 0), tab, agent)]
+    #
+    #     return award / 10
     # def get_small_reward(self, tab, cell, agent):
     #     mi = cell // BOARD_DIM * BOARD_DIM
     #     # arr = (tab[max(max(cell - 2 - 2 * BOARD_DIM, mi - 2 * BOARD_DIM), 0): max(min(cell + 3 - 2 * BOARD_DIM, mi - BOARD_DIM), 0)])  + (tab[max(max(cell - 2 - BOARD_DIM, mi - BOARD_DIM), 0): max(min(cell + 3 - BOARD_DIM, mi), 0)]) + (tab[max(cell - 2, mi): min(cell + 3, mi + BOARD_DIM)]) + (tab[max(cell - 2 + BOARD_DIM, mi + BOARD_DIM): min(cell + 3 + BOARD_DIM, mi + 2 * BOARD_DIM)]) + (tab[max(cell - 2 + 2 * BOARD_DIM, mi + 2 * BOARD_DIM): min(cell + 3 + 2 * BOARD_DIM, mi + 4 * BOARD_DIM)])
@@ -326,7 +394,14 @@ class DQNAgent(Agent):
                 random.uniform(0, 1) < lerp([self.epsilon, self.epsilon_end], max(0,
                                                                                   self.num_games - self.pre_training_games) * self.epsilon_decay_linear)
         ):
+
+            # legal_actions = game.get_legal_actions(self.i_agent)
+
             action = random.choice(game.get_legal_actions(self.i_agent))
+
+            # action = self.getCloestElement(self.pre_action,legal_actions)
+
+            self.pre_action = action
         else:
             game_state = self.get_model_inputs(game)
             # Predict action based on current game state.

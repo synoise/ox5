@@ -142,7 +142,7 @@ class TicTacToeGame(Game):
         return res
 
     def __str__(self) -> str:
-        result = "_________\n"
+        result = "\n"
         for y in range(BOARD_DIM):
             if y > 0:
                 result += "\n"  # ""\n-----\n"
