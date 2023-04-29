@@ -61,10 +61,14 @@ dqn_second = DQNAgent(i_agent=1,
 #                             dueling_dqn=True,
 #                             seed=33)
 
-human = Human(0)
+# human = Human(0)
 # randomAgent = RandomAgent(1)
-path_model1 = 'D:\Xagents_DQN\Agent_dqn-first_0_at_end.h5'
-path_model2 = 'D:\Xagents_DQN\Agent_dqn-second_0_at_end.h5'
+model1='\Agent_dqn-first_0_at_end.h5'
+model2='\Agent_dqn-second_0_at_end.h5'
+
+folder="D:\Xagents_DQN"
+path_model1 = folder + model1
+path_model2 = folder + model2
 
 dqn_first.loadModel(path_model1)
 dqn_second.loadModel(path_model2)
@@ -73,8 +77,10 @@ dqn_first.model.summary()
 dqn_second.model.summary()
 
 for I in range(150):
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, plot=True, debug=False)
+    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second],1500,paths= [model1,model2], plot=True, debug=False)
     print("kolejne epoki: " + str(I) + "   ---->")
-    plot_game_results(results, 2)
+    plot_game_results(results, 2,100,[path_model1,path_model2])
+    dqn_first.model.summary()
+    dqn_second.model.summary()
     dqn_first.saveModel(path_model1)
     dqn_second.saveModel(path_model2)
