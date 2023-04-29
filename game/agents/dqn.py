@@ -10,6 +10,11 @@ from ..game import Agent
 from ..tic_tac_toe import TicTacToeGame, TicTacToeAction, GamePlayer, BOARD_SIZE, BOARD_DIM
 # from keras.models import load_model
 from tensorflow import keras
+
+from ..tools import getCloestElement
+from ..utils import agent_signs
+
+
 # from tensorflow.keras import layers
 
 def lerp(v, d):
@@ -32,6 +37,7 @@ class DQNAgent(Agent):
                  reward_loss: float = -10.,
                  double_dqn=True, double_dqn_n_games=1,
                  dueling_dqn=True,
+                 randomizer = [True, False],
                  seed=42):
         super().__init__(i_agent)
         self.gamma = gamma
@@ -44,6 +50,7 @@ class DQNAgent(Agent):
         self.double_dqn = double_dqn
         self.double_dqn_n_games = double_dqn_n_games
         self.dueling_dqn = dueling_dqn
+        self.randomizer = randomizer
         self.pre_training_games = pre_training_games
         self.seed = seed
         self.reward_draw = reward_draw
@@ -60,7 +67,7 @@ class DQNAgent(Agent):
 
         self.pre_action = BOARD_DIM * BOARD_DIM
         random.seed(seed)
-
+        self.pre_action = -1
         self.model = self.get_model()
 
         if self.double_dqn:
@@ -109,7 +116,7 @@ class DQNAgent(Agent):
             else:
                 return self.reward_loss
         else:
-            return self.award2(game.board.tolist(), i_action,game.board[i_action] )
+            return 0 #self.award2(game.board.tolist(), i_action,game.board[i_action] )
 
     def mini(self,N, mi):
         if N >= mi + BOARD_DIM:
@@ -228,6 +235,80 @@ class DQNAgent(Agent):
             return 0
 
         return 0
+
+
+    def getCloest(self,param, param1, param2, param3, param4, tab, agent):
+        try:
+            if tab[param] == 0 and tab[param1] == agent:
+                return [param, -4]
+        except:
+            pass
+        try:
+            if tab[param] == tab[param1] == 0 and tab[param2] == agent:
+                return [param1, -3]
+        except:
+            pass
+        try:
+            if tab[param] == tab[param1] == tab[param2] == 0 and tab[param3] == agent:
+                return [param3, -2]
+        except:
+            pass
+        try:
+            if tab[param] == tab[param1] == tab[param2] == tab[param3] == 0 or tab[param4] == agent:
+                return [param3, -1]
+        except:
+            pass
+        # print(agent,tab)
+        # print(tab[param] == tab[param1] == tab[param2] == tab[param3] == agent or tab[param4])
+
+        return [0, 0]
+
+
+    # def getCloestElement(self, cell, tab, agent):
+    #     mi = cell // BOARD_DIM * BOARD_DIM
+    #     # award = 0
+    #     # award = [self.mini(cell + 1, mi),self.maxi(cell - 1, mi),self.mini(cell + BOARD_DIM, self.maxLen2),self.maxi(cell - BOARD_DIM, 0),
+    #     #          self.mini(cell + BOARD_DIM + 1,self.maxi(cell + BOARD_DIM - 1,self.maxi(self.mini(cell - BOARD_DIM + 1,
+    #     #          self.maxi(cell - BOARD_DIM - 1, 0),
+    #     award = np.array([
+    #         self.getCloest(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),
+    #                         self.mini(cell + 4, mi), self.mini(cell + 5, mi), tab, agent),
+    #         self.getCloest(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),
+    #                         self.maxi(cell - 4, mi), self.maxi(cell - 5, mi), tab, agent),
+    #         self.getCloest(self.mini(cell + BOARD_DIM, self.maxLen2),
+    #                         self.mini(cell + 2 * BOARD_DIM, self.maxLen2),
+    #                         self.mini(cell + 3 * BOARD_DIM, self.maxLen2),
+    #                         self.mini(cell + 4 * BOARD_DIM, self.maxLen2),
+    #                         self.mini(cell + 5 * BOARD_DIM, self.maxLen2), tab, agent),
+    #         self.getCloest(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
+    #                         self.maxi(cell - 3 * BOARD_DIM, 0), self.maxi(cell - 4 * BOARD_DIM, 0),
+    #                         self.maxi(cell - 5 * BOARD_DIM, 0), tab, agent),
+    #         self.getCloest(self.mini(cell + BOARD_DIM + 1, self.maxLen2),
+    #                         self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),
+    #                         self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),
+    #                         self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2),
+    #                         self.mini(cell + 5 * BOARD_DIM + 5, self.maxLen2), tab, agent),
+    #         self.getCloest(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),
+    #                         self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),
+    #                         self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),
+    #                         self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),
+    #                         self.maxi(cell + 5 * BOARD_DIM - 5, mi + 5 * BOARD_DIM), tab, agent),
+    #         self.getCloest(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0),
+    #                         self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),
+    #                         self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),
+    #                         self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0),
+    #                         self.maxi(self.mini(cell - 5 * BOARD_DIM + 5, mi - BOARD_DIM * 5), 0), tab, agent),
+    #         self.getCloest(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0),
+    #                         self.maxi(cell - 3 * BOARD_DIM - 3, 0), self.maxi(cell - 4 * BOARD_DIM - 4, 0),
+    #                         self.maxi(cell - 5 * BOARD_DIM - 5, 0), tab, agent)])
+    #
+    #     not_expect = np.array([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]])
+    #     if np.array_equal(not_expect, award):
+    #         return -1
+    #     xxx= award.flatten()
+    #     arr = np.argmin(xxx)
+    #     aaaa = award[arr-1][0]
+    #     return aaaa
 
     # def getCloest(self, param, param1, param2, param3, tab, agent):
     #     try:
@@ -397,11 +478,30 @@ class DQNAgent(Agent):
 
             # legal_actions = game.get_legal_actions(self.i_agent)
 
-            action = random.choice(game.get_legal_actions(self.i_agent))
 
-            # action = self.getCloestElement(self.pre_action,legal_actions)
 
-            self.pre_action = action
+            if self.pre_action >= 0 and random.choice(self.randomizer):
+            # if self.pre_action < 0:
+
+                moves = getCloestElement(self.pre_action, game.board, agent_signs[self.i_agent])
+                if len(moves) > 0 :
+
+                    x = random.choice(moves)
+
+                    action = TicTacToeAction(self.i_agent, x[0] )
+                else:
+                    action = random.choice(game.get_legal_actions(self.i_agent))
+            else:
+                action = random.choice(game.get_legal_actions(self.i_agent))
+            # else:
+            #     move = self.getCloestElement(self.pre_action, game.board, self.i_agent)
+            #     if move >= 0:
+            #         action = TicTacToeAction(self.i_agent, move)
+            #     else:
+            #         action = random.choice(game.get_legal_actions(self.i_agent))
+            #
+
+            self.pre_action = action.position
         else:
             game_state = self.get_model_inputs(game)
             # Predict action based on current game state.

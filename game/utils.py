@@ -14,7 +14,7 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
         agent.new_game(game)
 
     while not agents[game.get_current_agent()].next(game):
-        # print(game.__str__())
+        print(game.__str__())
         pass
 
     print(game.__str__())
@@ -28,7 +28,7 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
 
 def play_games(create_game: Callable[[], Game], agents: List[Agent],
                n_games: int = 10000, debug: bool = False,
-               plot: bool = False, plot_window: int = 20, plot_update_n_games: int = 50) -> List[int]:
+               plot: bool = False, plot_window: int = 20, plot_update_n_games: int = 200) -> List[int]:
     results = []
 
     for i in range(n_games):

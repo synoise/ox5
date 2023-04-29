@@ -6,6 +6,7 @@ from typing import List
 from copy import deepcopy
 
 from .game import Game, Agent, Action
+from .tools import checkLines,BOARD_SIZE
 
 
 # Tic-Tac-Toe implementation
@@ -16,7 +17,7 @@ class GamePlayer(IntEnum):
     CROSS = -1
 
 
-BOARD_DIM: int = 10
+BOARD_DIM = BOARD_SIZE
 BOARD_SIZE = BOARD_DIM ** 2
 
 
@@ -33,31 +34,31 @@ BOARD_SIZE = BOARD_DIM ** 2
 #   [2, 4, 6]
 # ]
 
-def checkLines(BOARD_DIM1):
-    tab = []
-    # CHECK_LINES = [
-    for i in range(BOARD_DIM1):
-        for j in range(BOARD_DIM1):
-            if j < BOARD_DIM1 - 4:
-                tab.append([j + i * BOARD_DIM1, 1 + j + i * BOARD_DIM1, 2 + j + i * BOARD_DIM1, 3 + j + i * BOARD_DIM1, 4 + j + i * BOARD_DIM1])  # rows
-
-            d = i * BOARD_DIM1 + j
-
-            if i < BOARD_DIM1 - 4 and j < BOARD_DIM1 - 4:
-                tab.append([d, d + BOARD_DIM1 + 1, d + BOARD_DIM1 * 2 + 2, d + BOARD_DIM1 * 3 + 3, d + BOARD_DIM1 * 4 + 4])  # rows
-            d = i * BOARD_DIM1 + j
-
-            if 3 < i < BOARD_DIM1 and j < BOARD_DIM1 - 4:
-                tab.append([ d, d - BOARD_DIM1 + 1, d - BOARD_DIM1 * 2 + 2, d - BOARD_DIM1 * 3 + 3, d - BOARD_DIM1 * 4 + 4])  # rows
-
-    for i in range(BOARD_DIM1**2 - BOARD_DIM1*4):
-        tab.append([i, i + BOARD_DIM1, i + BOARD_DIM1 * 2, i + BOARD_DIM1 * 3, i + BOARD_DIM1 * 4])  # cols
-
-    # if j < BOARD_DIM1 - 5 and i < BOARD_DIM1 - 5:
-    #     tab.append([i * j, i * j + BOARD_DIM1 + 1, i * j + BOARD_DIM1 * 2 + 2, i * j + BOARD_DIM1 * 3 + 3, i * j + BOARD_DIM1 * 4 + 4])  # diagonals
-    # if j < BOARD_DIM1 - 5 and i + 5 < BOARD_DIM1:
-    #     tab.append([i * j + 4, i * j + BOARD_DIM1 + 3, i * j + BOARD_DIM1 * 2 + 2, i * j + BOARD_DIM1 * 3 + 1, i * j + BOARD_DIM1 * 4])  #
-    return tab
+# def checkLines(BOARD_DIM1):
+#     tab = []
+#     # CHECK_LINES = [
+#     for i in range(BOARD_DIM1):
+#         for j in range(BOARD_DIM1):
+#             if j < BOARD_DIM1 - 4:
+#                 tab.append([j + i * BOARD_DIM1, 1 + j + i * BOARD_DIM1, 2 + j + i * BOARD_DIM1, 3 + j + i * BOARD_DIM1, 4 + j + i * BOARD_DIM1])  # rows
+#
+#             d = i * BOARD_DIM1 + j
+#
+#             if i < BOARD_DIM1 - 4 and j < BOARD_DIM1 - 4:
+#                 tab.append([d, d + BOARD_DIM1 + 1, d + BOARD_DIM1 * 2 + 2, d + BOARD_DIM1 * 3 + 3, d + BOARD_DIM1 * 4 + 4])  # rows
+#             d = i * BOARD_DIM1 + j
+#
+#             if 3 < i < BOARD_DIM1 and j < BOARD_DIM1 - 4:
+#                 tab.append([ d, d - BOARD_DIM1 + 1, d - BOARD_DIM1 * 2 + 2, d - BOARD_DIM1 * 3 + 3, d - BOARD_DIM1 * 4 + 4])  # rows
+#
+#     for i in range(BOARD_DIM1**2 - BOARD_DIM1*4):
+#         tab.append([i, i + BOARD_DIM1, i + BOARD_DIM1 * 2, i + BOARD_DIM1 * 3, i + BOARD_DIM1 * 4])  # cols
+#
+#     # if j < BOARD_DIM1 - 5 and i < BOARD_DIM1 - 5:
+#     #     tab.append([i * j, i * j + BOARD_DIM1 + 1, i * j + BOARD_DIM1 * 2 + 2, i * j + BOARD_DIM1 * 3 + 3, i * j + BOARD_DIM1 * 4 + 4])  # diagonals
+#     # if j < BOARD_DIM1 - 5 and i + 5 < BOARD_DIM1:
+#     #     tab.append([i * j + 4, i * j + BOARD_DIM1 + 3, i * j + BOARD_DIM1 * 2 + 2, i * j + BOARD_DIM1 * 3 + 1, i * j + BOARD_DIM1 * 4])  #
+#     return tab
 
 
 CHECK_LINES = checkLines(BOARD_DIM)

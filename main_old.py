@@ -7,7 +7,7 @@ from game.agents import RandomAgent, DQNAgent
 
 # agent nagradzany tylko na końcu
 
-dqn_first = DQNAgent(i_agent=0,
+dqn_first = DQNAgentAtLast(i_agent=0,
                          is_learning=True,
                          learning_rate=0.001,
                          gamma=0.9,
@@ -17,15 +17,16 @@ dqn_first = DQNAgent(i_agent=0,
                          experience_replay_batch_size=64,
                          pre_training_games=500,
                          memory_size=10000,
-                         reward_draw=5.,
-                         reward_win=10.,
-                         reward_loss=-10.,
+                         reward_draw=10.,
+                         reward_win=20.,
+                         reward_loss=-20.,
+                         randomizer=[True],
                          double_dqn=True,
                          double_dqn_n_games=1,
                          dueling_dqn=True,
                          seed=4)
 
-dqn_second = DQNAgent(i_agent=1,
+dqn_second = DQNAgentAtLast(i_agent=1,
                             is_learning=True,
                             learning_rate=0.001,
                             gamma=0.9,
@@ -35,10 +36,11 @@ dqn_second = DQNAgent(i_agent=1,
                             experience_replay_batch_size=64,
                             pre_training_games=500,
                             memory_size=10000,
-                            reward_draw=5.,
-                            reward_win=10.,
-                            reward_loss=-10.,
+                            reward_draw=10.,
+                            reward_win=20.,
+                            reward_loss=-20.,
                             double_dqn=True,
+                            randomizer=[True,True,False],
                             double_dqn_n_games=1,
                             dueling_dqn=True,
                             seed=3)
@@ -61,10 +63,11 @@ dqn_second = DQNAgent(i_agent=1,
 #                             dueling_dqn=True,
 #                             seed=33)
 
-human = Human(0)
+# human = Human(0)
 # randomAgent = RandomAgent(1)
-path_model1 = 'D:\Xagents_DQN\Agent_dqn-first_0_at_end.h5'
-path_model2 = 'D:\Xagents_DQN\Agent_dqn-second_0_at_end.h5'
+folder="D:\Xagents_DQN"
+path_model1 = folder + '\Agent_dqn-first_0_at_end.h5'
+path_model2 = folder + '\Agent_dqn-second_0_at_end.h5'
 
 dqn_first.loadModel(path_model1)
 dqn_second.loadModel(path_model2)
