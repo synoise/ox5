@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Callable
 import matplotlib
 import matplotlib.pyplot as plt
@@ -27,8 +28,10 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
 
 
 def play_games(create_game: Callable[[], Game], agents: List[Agent],
-               n_games: int = 10000, debug: bool = False,
-               plot: bool = False, plot_window: int = 20, plot_update_n_games: int = 200) -> List[int]:
+               n_games: int = 10000,
+               paths:List=[],
+               debug: bool = False,
+               plot: bool = False, plot_window: int = 20, plot_update_n_games: int = 300) -> List[int]:
     results = []
 
     for i in range(n_games):
@@ -44,7 +47,7 @@ def play_games(create_game: Callable[[], Game], agents: List[Agent],
         # border.on_button_click(i,3)
         if plot and ((i + 1) % plot_update_n_games == 0 or i == n_games - 1):
             display.clear_output(wait=True)
-            plot_game_results(results, len(agents), plot_window)
+            plot_game_results(results, len(agents), plot_window,paths)
             display.display(plt.gcf())
             plt.clf()
 
@@ -72,16 +75,18 @@ def moving_count(items: List[int], value: int, window: int) -> List[int]:
     return results
 
 
-def plot_game_results(results: List[int], num_agents: int, window: int = 100):
+def plot_game_results(results: List[int], num_agents: int, window: int = 100,paths=["none","none"]):
     game_number = range(window, len(results) + 1)
     draws = moving_count(results, -1, window)
     winners = [moving_count(results, i, window) for i in range(num_agents)]
     plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
     plt.plot(game_number, draws, label='Draw')
     for i, winner in enumerate(winners, start=0):
-        plt.plot(game_number, winner, label= 'Agent ' + str(i) + " :: " + agent_id_to_char(agent_signs[i]) + ' wins')
-    plt.ylabel(f'Rate over trailing window of {window} games')
-    plt.xlabel('Game number')
+        plt.plot(game_number, winner, label= 'Agent ' + str(i) + " :: " + agent_id_to_char(agent_signs[i]) + ' wins'+paths[i])
+    plt.ylabel(f'Ocena w końcowym oknie {window} | ')
+    teraz = datetime.datetime.now()
+    print(paths)
+    plt.xlabel('Epoki |' + "Czas: " + teraz.strftime("%H:%M") + "  " + teraz.strftime("%d-%m") )
     plt.xlim([0, len(results)])
     plt.ylim([0, 1])
     ax = plt.gca()

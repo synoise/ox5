@@ -7,12 +7,12 @@ from game.agents import RandomAgent, DQNAgent
 
 # agent nagradzany tylko na końcu
 
-dqn_first = DQNAgentAtLast(i_agent=0,
+dqn_second = DQNAgentAtLast(i_agent=1,
                          is_learning=True,
                          learning_rate=0.001,
-                         gamma=0.9,
+                         gamma=0.8,
                          epsilon=0.3,
-                         epsilon_end=0.0005,
+                         epsilon_end=0.0001,
                          epsilon_decay_linear=1 / 3000,
                          experience_replay_batch_size=64,
                          pre_training_games=500,
@@ -20,13 +20,13 @@ dqn_first = DQNAgentAtLast(i_agent=0,
                          reward_draw=10.,
                          reward_win=20.,
                          reward_loss=-20.,
-                         randomizer=[True],
+                         randomizer=[True,False],
                          double_dqn=True,
                          double_dqn_n_games=1,
                          dueling_dqn=True,
-                         seed=4)
+                         seed=6)
 
-dqn_second = DQNAgentAtLast(i_agent=1,
+dqn_first = DQNAgentAtLast(i_agent=0,
                             is_learning=True,
                             learning_rate=0.001,
                             gamma=0.9,
@@ -43,7 +43,7 @@ dqn_second = DQNAgentAtLast(i_agent=1,
                             randomizer=[True,True,False],
                             double_dqn_n_games=1,
                             dueling_dqn=True,
-                            seed=3)
+                            seed=5)
 
 # dqn_second = DQNAgent(      i_agent=1,
 #                             is_learning=True,
@@ -65,9 +65,12 @@ dqn_second = DQNAgentAtLast(i_agent=1,
 
 # human = Human(0)
 # randomAgent = RandomAgent(1)
+model1='\Agent_dqn-first_0_at_end.h5'
+model2='\Agent_dqn-second_0_at_end.h5'
+
 folder="D:\Xagents_DQN"
-path_model1 = folder + '\Agent_dqn-first_0_at_end.h5'
-path_model2 = folder + '\Agent_dqn-second_0_at_end.h5'
+path_model1 = folder + model1
+path_model2 = folder + model2
 
 dqn_first.loadModel(path_model1)
 dqn_second.loadModel(path_model2)
@@ -76,8 +79,10 @@ dqn_first.model.summary()
 dqn_second.model.summary()
 
 for I in range(150):
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, plot=True, debug=False)
+    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second],1500,paths= [model1,model2], plot=True, debug=False)
     print("kolejne epoki: " + str(I) + "   ---->")
-    plot_game_results(results, 2)
+    plot_game_results(results, 2,100,[path_model1,path_model2])
+    dqn_first.model.summary()
+    dqn_second.model.summary()
     dqn_first.saveModel(path_model1)
     dqn_second.saveModel(path_model2)
