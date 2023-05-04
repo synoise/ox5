@@ -65,11 +65,10 @@ class DQNAgent(Agent):
         self.maxLen = BOARD_DIM * BOARD_DIM
         self.maxLen2 = self.maxLen - BOARD_DIM
 
-        self.pre_action = BOARD_DIM * BOARD_DIM
         random.seed(seed)
         self.pre_action = -1
         self.model = self.get_model()
-
+        self.award = 0
         if self.double_dqn:
             self.target_model = self.get_model()
             self.update_target_model()  # Sync weights
@@ -118,39 +117,39 @@ class DQNAgent(Agent):
         else:
             return 0 #self.award2(game.board.tolist(), i_action,game.board[i_action] )
 
-    def mini(self,N, mi):
-        if N >= mi + BOARD_DIM:
-            return False
-        return N
-
-    def maxi(self,N, mi):
-        if N < mi:
-            return False
-        return N
-
-    def getRow(self,param, param1, param2, param3, tab, agent):
-        try:
-            if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
-                return 1
-        except:
-            return 0
-        try:
-            if tab[param] == tab[param1] == tab[param2] == agent:
-                return 0.0001
-        except:
-            return 0
-        try:
-            if(tab[param] == tab[param1] == agent):
-                return 1e-08
-        except:
-            return 0
-        try:
-            if(tab[param] == agent):
-                return 1e-12
-        except:
-            return 0
-
-        return 0
+    # def mini(self,N, mi):
+    #     if N >= mi + BOARD_DIM:
+    #         return False
+    #     return N
+    #
+    # def maxi(self,N, mi):
+    #     if N < mi:
+    #         return False
+    #     return N
+    #
+    # def getRow(self,param, param1, param2, param3, tab, agent):
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+    #             return 1
+    #     except:
+    #         return 0
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == agent:
+    #             return 0.0001
+    #     except:
+    #         return 0
+    #     try:
+    #         if(tab[param] == tab[param1] == agent):
+    #             return 1e-08
+    #     except:
+    #         return 0
+    #     try:
+    #         if(tab[param] == agent):
+    #             return 1e-12
+    #     except:
+    #         return 0
+    #
+    #     return 0
 
         # try:
         # except:
@@ -180,88 +179,88 @@ class DQNAgent(Agent):
     #         pass
     #     return abs(award)
 
-    def award2(self,tab, cell, agent):
-        mi = cell // BOARD_DIM * BOARD_DIM
-        award = 0
-
-        award += self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent)
-        award += self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent)
-        award += self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent)
-        award += self.getRow(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
-                        self.maxi(cell - 3 * BOARD_DIM, 0),
-                        self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent)
-
-        award += self.getRow(self.mini(cell + BOARD_DIM + 1, self.maxLen2), self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),
-                        self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),
-                        self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2), tab, agent)
-
-        award += self.getRow(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),
-                        self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),
-                        self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),
-                        self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),
-                        tab, agent)
-
-        award += self.getRow(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0),
-                        self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),
-                        self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),
-                        self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0), tab, agent)
-
-        award += self.getRow(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0),
-                        self.maxi(cell - 3 * BOARD_DIM - 3, 0),
-                        self.maxi(cell - 4 * BOARD_DIM - 4, 0), tab, agent)
-
-        return award / 10
-
-    def getRow(self,param, param1, param2, param3, tab, agent):
-        try:
-            if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
-                return 1
-        except:
-            return 0
-        try:
-            if tab[param] == tab[param1] == tab[param2] == agent:
-                return 0.0001
-        except:
-            return 0
-        try:
-            if(tab[param] == tab[param1] == agent):
-                return 1e-08
-        except:
-            return 0
-        try:
-            if(tab[param] == agent):
-                return 1e-12
-        except:
-            return 0
-
-        return 0
-
-
-    def getCloest(self,param, param1, param2, param3, param4, tab, agent):
-        try:
-            if tab[param] == 0 and tab[param1] == agent:
-                return [param, -4]
-        except:
-            pass
-        try:
-            if tab[param] == tab[param1] == 0 and tab[param2] == agent:
-                return [param1, -3]
-        except:
-            pass
-        try:
-            if tab[param] == tab[param1] == tab[param2] == 0 and tab[param3] == agent:
-                return [param3, -2]
-        except:
-            pass
-        try:
-            if tab[param] == tab[param1] == tab[param2] == tab[param3] == 0 or tab[param4] == agent:
-                return [param3, -1]
-        except:
-            pass
-        # print(agent,tab)
-        # print(tab[param] == tab[param1] == tab[param2] == tab[param3] == agent or tab[param4])
-
-        return [0, 0]
+    # def award2(self,tab, cell, agent):
+    #     mi = cell // BOARD_DIM * BOARD_DIM
+    #     award = 0
+    #
+    #     award += self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent)
+    #     award += self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent)
+    #     award += self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent)
+    #     award += self.getRow(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
+    #                     self.maxi(cell - 3 * BOARD_DIM, 0),
+    #                     self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent)
+    #
+    #     award += self.getRow(self.mini(cell + BOARD_DIM + 1, self.maxLen2), self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),
+    #                     self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),
+    #                     self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2), tab, agent)
+    #
+    #     award += self.getRow(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),
+    #                     self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),
+    #                     self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),
+    #                     self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),
+    #                     tab, agent)
+    #
+    #     award += self.getRow(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0),
+    #                     self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),
+    #                     self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),
+    #                     self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0), tab, agent)
+    #
+    #     award += self.getRow(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0),
+    #                     self.maxi(cell - 3 * BOARD_DIM - 3, 0),
+    #                     self.maxi(cell - 4 * BOARD_DIM - 4, 0), tab, agent)
+    #
+    #     return award / 10
+    #
+    # def getRow(self,param, param1, param2, param3, tab, agent):
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+    #             return 1
+    #     except:
+    #         return 0
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == agent:
+    #             return 0.0001
+    #     except:
+    #         return 0
+    #     try:
+    #         if(tab[param] == tab[param1] == agent):
+    #             return 1e-08
+    #     except:
+    #         return 0
+    #     try:
+    #         if(tab[param] == agent):
+    #             return 1e-12
+    #     except:
+    #         return 0
+    #
+    #     return 0
+    #
+    #
+    # def getCloest(self,param, param1, param2, param3, param4, tab, agent):
+    #     try:
+    #         if tab[param] == 0 and tab[param1] == agent:
+    #             return [param, -4]
+    #     except:
+    #         pass
+    #     try:
+    #         if tab[param] == tab[param1] == 0 and tab[param2] == agent:
+    #             return [param1, -3]
+    #     except:
+    #         pass
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == 0 and tab[param3] == agent:
+    #             return [param3, -2]
+    #     except:
+    #         pass
+    #     try:
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == 0 or tab[param4] == agent:
+    #             return [param3, -1]
+    #     except:
+    #         pass
+    #     # print(agent,tab)
+    #     # print(tab[param] == tab[param1] == tab[param2] == tab[param3] == agent or tab[param4])
+    #
+    #     return [0, 0]
 
 
     # def getCloestElement(self, cell, tab, agent):
@@ -392,6 +391,7 @@ class DQNAgent(Agent):
             self.target_model.set_weights(self.model.get_weights())
 
     def get_model_inputs(self, game: TicTacToeGame):
+
         inputs = keras.utils.to_categorical(game.board, num_classes=3).reshape((self.n_inputs,))
         assert inputs.shape == (self.n_inputs,)
         return inputs
@@ -465,6 +465,20 @@ class DQNAgent(Agent):
 
         self.model.fit(states, q_targets, verbose=0)
 
+    def getAction(self,game: TicTacToeGame):
+        if self.pre_action >= 0 and random.choice(self.randomizer):
+            # if self.pre_action < 0:
+            moves = getCloestElement(self.pre_action, game.board, agent_signs[self.i_agent])
+            if len(moves) > 0:
+
+                x = random.choice(moves)
+
+                return TicTacToeAction(self.i_agent, x[0]), x[1]
+            else:
+                return random.choice(game.get_legal_actions(self.i_agent)),0
+        else:
+            return random.choice(game.get_legal_actions(self.i_agent)),0
+
     def next(self, game: TicTacToeGame) -> bool:
         # Store previous action in action log.
         # that is why we commit here and in end_game().
@@ -473,26 +487,16 @@ class DQNAgent(Agent):
         if self.is_learning and (
                 self.num_games < self.pre_training_games or
                 random.uniform(0, 1) < lerp([self.epsilon, self.epsilon_end], max(0,
-                                                                                  self.num_games - self.pre_training_games) * self.epsilon_decay_linear)
+                                                                        self.num_games - self.pre_training_games) * self.epsilon_decay_linear)
         ):
 
             # legal_actions = game.get_legal_actions(self.i_agent)
 
 
 
-            if self.pre_action >= 0 and random.choice(self.randomizer):
-            # if self.pre_action < 0:
 
-                moves = getCloestElement(self.pre_action, game.board, agent_signs[self.i_agent])
-                if len(moves) > 0 :
+            action, self.award = self.getAction(game)
 
-                    x = random.choice(moves)
-
-                    action = TicTacToeAction(self.i_agent, x[0] )
-                else:
-                    action = random.choice(game.get_legal_actions(self.i_agent))
-            else:
-                action = random.choice(game.get_legal_actions(self.i_agent))
             # else:
             #     move = self.getCloestElement(self.pre_action, game.board, self.i_agent)
             #     if move >= 0:
@@ -502,6 +506,7 @@ class DQNAgent(Agent):
             #
 
             self.pre_action = action.position
+
         else:
             game_state = self.get_model_inputs(game)
             # Predict action based on current game state.

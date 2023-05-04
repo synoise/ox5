@@ -15,7 +15,7 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
         agent.new_game(game)
 
     while not agents[game.get_current_agent()].next(game):
-        print(game.__str__())
+        # print(game.__str__())
         pass
 
     print(game.__str__())
@@ -54,7 +54,7 @@ def play_games(create_game: Callable[[], Game], agents: List[Agent],
     if debug:
         counts = Counter(results)
         print(
-            "After {} games we have draws: {} and wins: {}.".format(
+            "Po {} grach mamy - remisy: {}, wins: {}.".format(
                 n_games,
                 "{} ({:.2%})".format(counts[-1], counts[-1] / n_games),
                 ", ".join(["{} ({:.2%})".format(counts[i], counts[i] / n_games) for i in range(len(agents))])
@@ -75,18 +75,19 @@ def moving_count(items: List[int], value: int, window: int) -> List[int]:
     return results
 
 
-def plot_game_results(results: List[int], num_agents: int, window: int = 100,paths=["none","none"]):
+def plot_game_results(results: List[int], num_agents: int, window: int = 100,paths=["none","none"],tura=""):
     game_number = range(window, len(results) + 1)
     draws = moving_count(results, -1, window)
     winners = [moving_count(results, i, window) for i in range(num_agents)]
     plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
-    plt.plot(game_number, draws, label='Draw')
+    # plt.rc('axes', prop_cycle=(cycler('color', ['b', 'purple', 'orange'])))
+    plt.plot(game_number, draws, label='Remis')
     for i, winner in enumerate(winners, start=0):
         plt.plot(game_number, winner, label= 'Agent ' + str(i) + " :: " + agent_id_to_char(agent_signs[i]) + ' wins'+paths[i])
     plt.ylabel(f'Ocena w końcowym oknie {window} | ')
     teraz = datetime.datetime.now()
     print(paths)
-    plt.xlabel('Epoki |' + "Czas: " + teraz.strftime("%H:%M") + "  " + teraz.strftime("%d-%m") )
+    plt.xlabel(' Epoki: ' + tura + "| Czas: " + teraz.strftime("%H:%M") + "  " + teraz.strftime("%d-%m") )
     plt.xlim([0, len(results)])
     plt.ylim([0, 1])
     ax = plt.gca()
