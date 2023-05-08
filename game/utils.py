@@ -18,10 +18,10 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
         # print(game.__str__())
         pass
 
-    print(game.__str__())
-
     for agent in agents:
         agent.end_game(game)
+
+    print(game.__str__())
 
     return game.get_winners()
 

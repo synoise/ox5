@@ -91,25 +91,24 @@ def addMoves(move, tab):
     pass
 
 
-def searchForDangerous(agent, tab):
+def searchForDangerousAndWin(agent, tab):
 
     for indexes in CHECK_LINES:
         line = [tab[i] for i in indexes]
-
         # moves = [[val for val in sublst if val is not None] for sublst in moves]
-
-        if [-agent,0, -agent, -agent, -agent] == line:
-            return  indexes[1]
-        elif [-agent, -agent,0, -agent, -agent] == line:
-            return  indexes[2]
-        elif [-agent, -agent, -agent,0, -agent] == line:
-            return  indexes[3]
+        if [-agent, 0, -agent, -agent, -agent] == line:
+            return indexes[1]
+        elif [-agent, -agent, 0, -agent, -agent] == line:
+            return indexes[2]
+        elif [-agent, -agent, -agent, 0, -agent] == line:
+            return indexes[3]
         elif [-agent, -agent, -agent, -agent, 0] == line:
-            return  indexes[-1]
-        elif [0,-agent, -agent, -agent, -agent] == line:
-            return  indexes[0]
-        elif [0, -agent, -agent, -agent, 0] == line:
-            return random.choice([indexes[0], indexes[-1]])
+            return indexes[-1]
+        elif [0, -agent, -agent, -agent, -agent] == line:
+            return indexes[0]
+
+        # elif [0, -agent, -agent, -agent, 0] == line:
+        #     return random.choice([indexes[0], indexes[-1]])
         # if sum(line) == -4:
         #     print(line,indexes)
         #     for i in indexes:
@@ -118,11 +117,30 @@ def searchForDangerous(agent, tab):
     return False
 
 
+def searchForDangerousAndWin2(agent, tab):
+    for indexes in CHECK_LINES:
+        line = [tab[i] for i in indexes]
+        if [0, -agent, -agent, -agent, 0] == line:
+            return random.choice([indexes[0], indexes[-1]])
+    return False
+
 def getCloestElement(cell, tab, agent):
 
-    result = searchForDangerous(agent, tab)
+    result = searchForDangerousAndWin(-agent, tab) # can win !
     if result:
         return [(result,10)]
+
+    result = searchForDangerousAndWin(agent, tab) # can loss !
+    if result:
+        return [(result,10)]
+
+    result = searchForDangerousAndWin2(-agent, tab) # can win
+    if result:
+        return [(result, 10)]
+
+    result = searchForDangerousAndWin2(agent, tab) # can loss
+    if result:
+        return [(result, 10)]
 
     # result = searchForDangerous(agent, tab, [-agent, -agent, -agent, -agent,0])
     # if result:

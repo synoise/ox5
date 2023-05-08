@@ -9,7 +9,7 @@ from game.utils import play_games, plot_game_results
 
 # agent nagradzany tylko na końcu
 
-dqn_first = DQNAgentAtEnd(i_agent=1,
+dqn_first = DQNAgentAtEnd(i_agent=0,
                          is_learning=True,
                          learning_rate=0.001,
                          gamma=0.8,
@@ -22,13 +22,13 @@ dqn_first = DQNAgentAtEnd(i_agent=1,
                          reward_draw=10.,
                          reward_win=20.,
                          reward_loss=-20.,
-                         randomizer=[True],
+                         randomizer=[True,False,True,True],
                          double_dqn=True,
                          double_dqn_n_games=1,
                          dueling_dqn=True,
-                         seed=10)
+                         seed=15)
 
-dqn_second = DQNAgentAtEnd(i_agent=0,
+dqn_second = DQNAgentAtEnd(i_agent=1,
                          is_learning=True,
                          learning_rate=0.0001,
                          gamma=0.8,
@@ -41,11 +41,11 @@ dqn_second = DQNAgentAtEnd(i_agent=0,
                          reward_draw=10.,
                          reward_win=20.,
                          reward_loss=-20.,
-                         randomizer=[True],
+                         randomizer=[True,True,False,True],
                          double_dqn=True,
                          double_dqn_n_games=1,
                          dueling_dqn=True,
-                         seed=11)
+                         seed=15)
 
 # dqn_second = DQNAgentAtEnd(i_agent=1,
 #                             is_learning=True,
@@ -66,11 +66,16 @@ dqn_second = DQNAgentAtEnd(i_agent=0,
 #                             dueling_dqn=True,
 #                             seed=9)
 
-# human = Human(0)
+# human = Human(1)
 # randomAgent = RandomAgent(1)
 folder="D:\Xagents_DQN"
-model1 = '\Agent_first_04.05_At_End.h5'
-model2 = '\Agent_second_04.05_At_End.h5'
+model2 = '\Agent_first_08.05_At_End.h5'
+model1 = '\Agent_second_08.05_At_End.h5'
+# model1 = '\Agent_first_04.05_At_End.h5'
+# model2 = '\Agent_first_04.05_At_End.h5'
+# model1 = '\Agent_second__At_End.h5'
+# model2 = '\Agent_second__At_End.h5'
+# model2 = '\Agent_second__At_End.h5'
 path_model1 = folder + model1
 path_model2 = folder + model2
 
@@ -81,12 +86,12 @@ dqn_first.model.summary()
 dqn_second.model.summary()
 
 for I in range(150):
-    results = play_games(lambda: TicTacToeGame(), [dqn_second,dqn_first],1500,paths= [model2,model1], plot=True, debug=False)
+    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [model1, model2], plot=True, debug=False)
     print("kolejne epoki: " + str(I) + "   ---->")
-    plot_game_results(results, 2, 100, [model2, model1], " _ " + str(I))
+    plot_game_results(results, 2, 100, [model1, model2], " _ " + str(I))
 
-    # model1 = '\Agent_first_04.05_At_End.h5'
-    # model2 = '\Agent_second_04.05_At_End.h5'
+    # model1 = '\Agent_first_08.05_At_End.h5'
+    # model2 = '\Agent_second_08.05_At_End.h5'
     # path_model1 = folder + model1
     # path_model2 = folder + model2
 
