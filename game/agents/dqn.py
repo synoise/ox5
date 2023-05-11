@@ -65,6 +65,8 @@ class DQNAgent(Agent):
         self.maxLen = BOARD_DIM * BOARD_DIM
         self.maxLen2 = self.maxLen - BOARD_DIM
 
+        self.reward1=0
+
         random.seed(seed)
         self.pre_action = -1
         self.model = self.get_model()
@@ -81,6 +83,7 @@ class DQNAgent(Agent):
         self.model.save(path)
 
     def new_game(self, game):
+        self.reward1 = 0
         self.num_games += 1
         self.stage = None
         self.game_log = []
@@ -90,7 +93,7 @@ class DQNAgent(Agent):
             return
 
         self.commit_log(game, True)
-
+        self.reward1 = 0
         if self.num_games >= self.pre_training_games:
             self.train(self.game_log)
 
@@ -115,41 +118,41 @@ class DQNAgent(Agent):
             else:
                 return self.reward_loss
         else:
-            return 0 #self.award2(game.board.tolist(), i_action,game.board[i_action] )
+            return self.award2(game.board.tolist(), i_action,game.board[i_action] ) + 1e-16
 
-    # def mini(self,N, mi):
-    #     if N >= mi + BOARD_DIM:
-    #         return False
-    #     return N
-    #
-    # def maxi(self,N, mi):
-    #     if N < mi:
-    #         return False
-    #     return N
-    #
-    # def getRow(self,param, param1, param2, param3, tab, agent):
-    #     try:
-    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
-    #             return 1
-    #     except:
-    #         return 0
-    #     try:
-    #         if tab[param] == tab[param1] == tab[param2] == agent:
-    #             return 0.0001
-    #     except:
-    #         return 0
-    #     try:
-    #         if(tab[param] == tab[param1] == agent):
-    #             return 1e-08
-    #     except:
-    #         return 0
-    #     try:
-    #         if(tab[param] == agent):
-    #             return 1e-12
-    #     except:
-    #         return 0
-    #
-    #     return 0
+    def mini(self,N, mi):
+        if N >= mi + BOARD_DIM:
+            return False
+        return N
+
+    def maxi(self,N, mi):
+        if N < mi:
+            return False
+        return N
+
+    def getRow(self,param, param1, param2, param3, tab, agent):
+        try:
+            if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+                return 1
+        except:
+            return 0
+        try:
+            if tab[param] == tab[param1] == tab[param2] == agent:
+                return 0.0001
+        except:
+            return 0
+        try:
+            if(tab[param] == tab[param1] == agent):
+                return 1e-08
+        except:
+            return 0
+        try:
+            if(tab[param] == agent):
+                return 1e-12
+        except:
+            return 0
+
+        return 0
 
         # try:
         # except:
@@ -179,37 +182,37 @@ class DQNAgent(Agent):
     #         pass
     #     return abs(award)
 
-    # def award2(self,tab, cell, agent):
-    #     mi = cell // BOARD_DIM * BOARD_DIM
-    #     award = 0
-    #
-    #     award += self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent)
-    #     award += self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent)
-    #     award += self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent)
-    #     award += self.getRow(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
-    #                     self.maxi(cell - 3 * BOARD_DIM, 0),
-    #                     self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent)
-    #
-    #     award += self.getRow(self.mini(cell + BOARD_DIM + 1, self.maxLen2), self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),
-    #                     self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),
-    #                     self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2), tab, agent)
-    #
-    #     award += self.getRow(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),
-    #                     self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),
-    #                     self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),
-    #                     self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),
-    #                     tab, agent)
-    #
-    #     award += self.getRow(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0),
-    #                     self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),
-    #                     self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),
-    #                     self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0), tab, agent)
-    #
-    #     award += self.getRow(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0),
-    #                     self.maxi(cell - 3 * BOARD_DIM - 3, 0),
-    #                     self.maxi(cell - 4 * BOARD_DIM - 4, 0), tab, agent)
-    #
-    #     return award / 10
+    def award2(self,tab, cell, agent):
+        mi = cell // BOARD_DIM * BOARD_DIM
+        award = 0
+
+        award += self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent)
+        award += self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent)
+        award += self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent)
+        award += self.getRow(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
+                        self.maxi(cell - 3 * BOARD_DIM, 0),
+                        self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent)
+
+        award += self.getRow(self.mini(cell + BOARD_DIM + 1, self.maxLen2), self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),
+                        self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),
+                        self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2), tab, agent)
+
+        award += self.getRow(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),
+                        self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),
+                        self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),
+                        self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),
+                        tab, agent)
+
+        award += self.getRow(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0),
+                        self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),
+                        self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),
+                        self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0), tab, agent)
+
+        award += self.getRow(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0),
+                        self.maxi(cell - 3 * BOARD_DIM - 3, 0),
+                        self.maxi(cell - 4 * BOARD_DIM - 4, 0), tab, agent)
+
+        return award / 10
     #
     # def getRow(self,param, param1, param2, param3, tab, agent):
     #     try:
@@ -386,6 +389,23 @@ class DQNAgent(Agent):
         model.compile(optimizer=keras.optimizers.Adam(learning_rate=self.learning_rate), loss='mean_squared_error')
         return model
 
+    # def get_model(self):
+    #     input_layer = layers.Input((15, 15, 3))
+    #     layer = input_layer
+    #     layer = layers.Conv2D(32, (5, 5), strides=(1, 1), padding='same', activation='relu')(layer)
+    #
+    #     for i in range(self.n_layers):
+    #         layer = layers.Conv2D(32, (3, 3), strides=(1, 1), padding='same', activation='relu')(layer)
+    #
+    #     layer = layers.Conv2D(1, (1, 1), strides=(1, 1), padding='same', activation='linear')(layer)
+    #     layer = layers.Flatten()(layer)
+    #     layer = layers.Dense(225, activation='softmax')(layer)
+    #
+    #     model = keras.Model(inputs=input_layer, outputs=layer)
+    #     model.compile(optimizer=keras.optimizers.Adam(learning_rate=self.learning_rate),
+    #                   loss='categorical_crossentropy')
+    #     return model
+
     def update_target_model(self):
         if self.double_dqn:
             self.target_model.set_weights(self.model.get_weights())
@@ -415,8 +435,8 @@ class DQNAgent(Agent):
         if self.is_learning and self.stage != None:
             state, i_action = self.stage
             next_state = self.get_model_inputs(game).copy()
-            reward = self.get_reward(game, i_action)
-            self.game_log.append((state, i_action, reward, next_state, done))
+            self.reward1 = self.reward1 + self.get_reward(game, i_action) + self.award
+            self.game_log.append((state, i_action, self.reward1, next_state, done))
             self.stage = None
 
     def train(self, batch):
@@ -471,9 +491,9 @@ class DQNAgent(Agent):
             moves = getCloestElement(self.pre_action, game.board, agent_signs[self.i_agent])
             if len(moves) > 0:
 
-                x = random.choice(moves)
+                # x = random.choice(moves)
 
-                return TicTacToeAction(self.i_agent, x[0]), x[1]
+                return TicTacToeAction(self.i_agent, moves[0]), moves[1]
             else:
                 return random.choice(game.get_legal_actions(self.i_agent)),0
         else:

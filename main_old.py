@@ -69,7 +69,7 @@ dqn_second = DQNAgentEndMatrix(i_agent=1,
 human = Human(1)
 # randomAgent = RandomAgent(1)
 model1='\Agent_second__At_End.h5'
-model2='\DQNAgentEndMatrix.h5'
+model2='\Agent_first__At_End.h5'
 
 folder="D:\Xagents_DQN"
 path_model1 = folder + model1

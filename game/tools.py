@@ -43,7 +43,9 @@ CHECK_LINES = checkLines(BOARD_SIZE)
 def find_max_tuple(cells):
     try:
         max_value = max(cell[1] for row in cells for cell in row if isinstance(cell, tuple))
-        return [cell for row in cells for cell in row if isinstance(cell, tuple) and cell[1] == max_value]
+        x = [cell for row in cells for cell in row if isinstance(cell, tuple) and cell[1] == max_value]
+        x =random.choice(x)
+        return (x[0], 0)   #max_value
     except:
         return []
 
@@ -62,6 +64,7 @@ def mielimy(tab, start, stop, step, agent, cell, xxx):
 
 
 def addNear(tab, start, stop, step, agent, cell, xxx):
+    # print(agent,tab[start: stop: step])
     for i in range(start, stop, step):
         if i == cell:
             continue
@@ -128,19 +131,19 @@ def getCloestElement(cell, tab, agent):
 
     result = searchForDangerousAndWin(-agent, tab) # can win !
     if result:
-        return [(result,10)]
+        return (result,4)
 
     result = searchForDangerousAndWin(agent, tab) # can loss !
     if result:
-        return [(result,10)]
+        return (result,4)
 
     result = searchForDangerousAndWin2(-agent, tab) # can win
     if result:
-        return [(result, 10)]
+        return (result, 2)
 
     result = searchForDangerousAndWin2(agent, tab) # can loss
     if result:
-        return [(result, 10)]
+        return (result, 2)
 
     # result = searchForDangerous(agent, tab, [-agent, -agent, -agent, -agent,0])
     # if result:
