@@ -1,8 +1,10 @@
-from . import DQNAgent
-from ..tic_tac_toe import TicTacToeGame
+from .dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
+from ..tic_tac_toe import TicTacToeGame, BOARD_DIM
 
-# Podstawowy Agent DQN z nagrodą na końcu sieć wejściowa - stara:300
-class DQNAgentAtEnd(DQNAgent):
+
+# Podstawowy Agent DQN z nagrodą na końću i siecią 10:10:3
+
+class DQNAgentEndMatrixEnd(DQNAgentMatrixMaxReward):
 
     def get_reward(self, game: TicTacToeGame, i_action=-1) -> float:
         if game.is_game_over():

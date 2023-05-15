@@ -2,7 +2,7 @@ import random
 import numpy as np
 import tensorflow as tf
 from collections import deque
-from tensorflow import keras
+# from tensorflow import keras
 from keras import layers
 
 import codecs
@@ -11,7 +11,7 @@ from ..tic_tac_toe import TicTacToeGame, TicTacToeAction, GamePlayer, BOARD_SIZE
 # from keras.models import load_model
 from tensorflow import keras
 
-from ..tools import getCloestElement
+from ..tools import getCloestElement, award2
 from ..utils import agent_signs
 
 
@@ -20,7 +20,9 @@ from ..utils import agent_signs
 def lerp(v, d):
     return v[0] * (1 - d) + v[1] * d
 
+nInputs = 3 * BOARD_SIZE
 
+# Podstawowy Agent DQN z nagrodą cząstkową sieć wejściowa :300
 class DQNAgent(Agent):
     def __init__(self, i_agent: int,
                  is_learning: bool = True,
@@ -59,13 +61,13 @@ class DQNAgent(Agent):
         self.is_learning = is_learning
 
         self.num_games = -1
-        self.n_inputs = 3 * BOARD_SIZE
+        self.n_inputs = nInputs
         self.n_actions = BOARD_SIZE
         self.memory = deque(maxlen=memory_size)
         self.maxLen = BOARD_DIM * BOARD_DIM
         self.maxLen2 = self.maxLen - BOARD_DIM
 
-        self.reward1=0
+        self.reward1 = 0
 
         random.seed(seed)
         self.pre_action = -1
@@ -118,101 +120,101 @@ class DQNAgent(Agent):
             else:
                 return self.reward_loss
         else:
-            return self.award2(game.board.tolist(), i_action,game.board[i_action] ) + 1e-16
+            return award2(game.board.tolist(), i_action,game.board[i_action] ) + 1e-20
 
-    def mini(self,N, mi):
-        if N >= mi + BOARD_DIM:
-            return False
-        return N
-
-    def maxi(self,N, mi):
-        if N < mi:
-            return False
-        return N
-
-    def getRow(self,param, param1, param2, param3, tab, agent):
-        try:
-            if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
-                return 1
-        except:
-            return 0
-        try:
-            if tab[param] == tab[param1] == tab[param2] == agent:
-                return 0.0001
-        except:
-            return 0
-        try:
-            if(tab[param] == tab[param1] == agent):
-                return 1e-08
-        except:
-            return 0
-        try:
-            if(tab[param] == agent):
-                return 1e-12
-        except:
-            return 0
-
-        return 0
-
-        # try:
-        # except:
+    # def mini(self,N, mi):
+    #     if N >= mi + BOARD_DIM:
+    #         return False
+    #     return N
     #
-    # def getRowOLD(self,param, param1, param2, param3, tab, agent):
-    #     award = 0
+    # def maxi(self,N, mi):
+    #     if N < mi:
+    #         return False
+    #     return N
     #
+    # def getRow(self,param, param1, param2, param3, tab, agent):
     #     try:
-    #         # if param and tab[param] == agent:
-    #         award += 10 * (tab[param])
+    #         if tab[param] == tab[param1] == tab[param2] == tab[param3] == agent:
+    #             return 1
     #     except:
-    #         pass
+    #         return 0
     #     try:
-    #         # if param1 and tab[param] == agent:
-    #         award += 7 * (tab[param1])
+    #         if tab[param] == tab[param1] == tab[param2] == agent:
+    #             return 0.0001
     #     except:
-    #         pass
+    #         return 0
     #     try:
-    #         # if param2 and tab[param] == agent:
-    #         award += 3 * (tab[param2])
+    #         if(tab[param] == tab[param1] == agent):
+    #             return 1e-08
     #     except:
-    #         pass
+    #         return 0
     #     try:
-    #         # if param3 and tab[param] == agent:
-    #         award +=7 * (tab[param3])
+    #         if(tab[param] == agent):
+    #             return 1e-12
     #     except:
-    #         pass
-    #     return abs(award)
-
-    def award2(self,tab, cell, agent):
-        mi = cell // BOARD_DIM * BOARD_DIM
-        award = 0
-
-        award += self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent)
-        award += self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent)
-        award += self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent)
-        award += self.getRow(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
-                        self.maxi(cell - 3 * BOARD_DIM, 0),
-                        self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent)
-
-        award += self.getRow(self.mini(cell + BOARD_DIM + 1, self.maxLen2), self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),
-                        self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),
-                        self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2), tab, agent)
-
-        award += self.getRow(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),
-                        self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),
-                        self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),
-                        self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),
-                        tab, agent)
-
-        award += self.getRow(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0),
-                        self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),
-                        self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),
-                        self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0), tab, agent)
-
-        award += self.getRow(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0),
-                        self.maxi(cell - 3 * BOARD_DIM - 3, 0),
-                        self.maxi(cell - 4 * BOARD_DIM - 4, 0), tab, agent)
-
-        return award / 10
+    #         return 0
+    #
+    #     return 0
+    #
+    #     # try:
+    #     # except:
+    # #
+    # # def getRowOLD(self,param, param1, param2, param3, tab, agent):
+    # #     award = 0
+    # #
+    # #     try:
+    # #         # if param and tab[param] == agent:
+    # #         award += 10 * (tab[param])
+    # #     except:
+    # #         pass
+    # #     try:
+    # #         # if param1 and tab[param] == agent:
+    # #         award += 7 * (tab[param1])
+    # #     except:
+    # #         pass
+    # #     try:
+    # #         # if param2 and tab[param] == agent:
+    # #         award += 3 * (tab[param2])
+    # #     except:
+    # #         pass
+    # #     try:
+    # #         # if param3 and tab[param] == agent:
+    # #         award +=7 * (tab[param3])
+    # #     except:
+    # #         pass
+    # #     return abs(award)
+    #
+    # def award2(self,tab, cell, agent):
+    #     mi = cell // BOARD_DIM * BOARD_DIM
+    #     award = []
+    #
+    #     award.append(self.getRow(self.mini(cell + 1, mi), self.mini(cell + 2, mi), self.mini(cell + 3, mi),self.mini(cell + 4, mi), tab, agent))
+    #     award.append(self.getRow(self.maxi(cell - 1, mi), self.maxi(cell - 2, mi), self.maxi(cell - 3, mi),self.maxi(cell - 4, mi), tab, agent))
+    #     award.append(self.getRow(self.mini(cell + BOARD_DIM, self.maxLen2), self.mini(cell + 2 * BOARD_DIM, self.maxLen2),self.mini(cell + 3 * BOARD_DIM, self.maxLen2), self.mini(cell + 4 * BOARD_DIM, self.maxLen2),tab, agent))
+    #     award.append(self.getRow(self.maxi(cell - BOARD_DIM, 0), self.maxi(cell - 2 * BOARD_DIM, 0),
+    #                     self.maxi(cell - 3 * BOARD_DIM, 0),
+    #                     self.maxi(cell - 4 * BOARD_DIM, 0), tab, agent))
+    #
+    #     award.append(self.getRow(self.mini(cell + BOARD_DIM + 1, self.maxLen2), self.mini(cell + 2 * BOARD_DIM + 2, self.maxLen2),
+    #                     self.mini(cell + 3 * BOARD_DIM + 3, self.maxLen2),
+    #                     self.mini(cell + 4 * BOARD_DIM + 4, self.maxLen2), tab, agent))
+    #
+    #     award.append(self.getRow(self.maxi(cell + BOARD_DIM - 1, mi + BOARD_DIM),
+    #                     self.maxi(cell + 2 * BOARD_DIM - 2, mi + 2 * BOARD_DIM),
+    #                     self.maxi(cell + 3 * BOARD_DIM - 3, mi + 3 * BOARD_DIM),
+    #                     self.maxi(cell + 4 * BOARD_DIM - 4, mi + 4 * BOARD_DIM),
+    #                     tab, agent))
+    #
+    #     award.append(self.getRow(self.maxi(self.mini(cell - BOARD_DIM + 1, mi - BOARD_DIM), 0),
+    #                     self.maxi(self.mini(cell - 2 * BOARD_DIM + 2, mi - BOARD_DIM * 2), 0),
+    #                     self.maxi(self.mini(cell - 3 * BOARD_DIM + 3, mi - BOARD_DIM * 3), 0),
+    #                     self.maxi(self.mini(cell - 4 * BOARD_DIM + 4, mi - BOARD_DIM * 4), 0), tab, agent))
+    #
+    #     award.append(self.getRow(self.maxi(cell - BOARD_DIM - 1, 0), self.maxi(cell - 2 * BOARD_DIM - 2, 0),
+    #                     self.maxi(cell - 3 * BOARD_DIM - 3, 0),
+    #                     self.maxi(cell - 4 * BOARD_DIM - 4, 0), tab, agent))
+    #     x = max(award)
+    #     return x
     #
     # def getRow(self,param, param1, param2, param3, tab, agent):
     #     try:
@@ -439,11 +441,15 @@ class DQNAgent(Agent):
             self.game_log.append((state, i_action, self.reward1, next_state, done))
             self.stage = None
 
+    def get_batch_dimension(self, batch_size):
+        return (batch_size, nInputs)
+
     def train(self, batch):
         """Implements Bellman equation."""
         batch_size = len(batch)
-        states = np.zeros((batch_size, self.n_inputs))
-        next_states = np.zeros((batch_size, self.n_inputs))
+        states = np.zeros(self.get_batch_dimension(batch_size))
+        next_states = np.zeros(self.get_batch_dimension(batch_size))
+
         actions = np.zeros((batch_size), dtype=np.int32)
         rewards = np.zeros(batch_size)
         done = np.zeros(batch_size)
@@ -455,8 +461,8 @@ class DQNAgent(Agent):
             rewards[i] = reward
             done[i] = 0. if d else 1.
 
-        assert states.shape == (batch_size, self.n_inputs)
-        assert next_states.shape == (batch_size, self.n_inputs)
+        assert states.shape == (self.get_batch_dimension(batch_size))
+        assert next_states.shape == (self.get_batch_dimension(batch_size))
 
         q_values = self.model.predict(states)
         q_next = self.model.predict(next_states)
@@ -490,9 +496,7 @@ class DQNAgent(Agent):
             # if self.pre_action < 0:
             moves = getCloestElement(self.pre_action, game.board, agent_signs[self.i_agent])
             if len(moves) > 0:
-
                 # x = random.choice(moves)
-
                 return TicTacToeAction(self.i_agent, moves[0]), moves[1]
             else:
                 return random.choice(game.get_legal_actions(self.i_agent)),0

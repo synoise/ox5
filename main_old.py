@@ -1,4 +1,4 @@
-from game.agents.dqn_end_matrix import DQNAgentEndMatrix
+from game.agents.dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
 from game.agents.human import Human
 from game.agents.dqn_at_end import DQNAgentAtEnd
 # from game.agents.dqn_at_last import DQNAgentAtLast
@@ -27,24 +27,24 @@ dqn_first = DQNAgentAtEnd(i_agent=0,
                             dueling_dqn=True,
                             seed=6)
 
-dqn_second = DQNAgentEndMatrix(i_agent=1,
-                         is_learning=False,
-                         learning_rate=0.0001,
-                         gamma=0.9,
-                         epsilon=0.3,
-                         epsilon_end=0.00001,
-                         epsilon_decay_linear=1 / 3000,
-                         experience_replay_batch_size=64,
-                         pre_training_games=500,
-                         memory_size=10000,
-                         reward_draw=10.,
-                         reward_win=20.,
-                         reward_loss=-20.,
-                         randomizer=[True,True,False],
-                         double_dqn=True,
-                         double_dqn_n_games=1,
-                         dueling_dqn=True,
-                         seed=7)
+dqn_second = DQNAgentMatrixMaxReward(i_agent=1,
+                                     is_learning=False,
+                                     learning_rate=0.0001,
+                                     gamma=0.9,
+                                     epsilon=0.3,
+                                     epsilon_end=0.00001,
+                                     epsilon_decay_linear=1 / 3000,
+                                     experience_replay_batch_size=64,
+                                     pre_training_games=500,
+                                     memory_size=10000,
+                                     reward_draw=10.,
+                                     reward_win=20.,
+                                     reward_loss=-20.,
+                                     randomizer=[True,True,False],
+                                     double_dqn=True,
+                                     double_dqn_n_games=1,
+                                     dueling_dqn=True,
+                                     seed=7)
 
 
 

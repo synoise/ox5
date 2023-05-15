@@ -21,6 +21,7 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
     for agent in agents:
         agent.end_game(game)
 
+    print("first",agents[0])
     print(game.__str__())
 
     return game.get_winners()
@@ -36,8 +37,15 @@ def play_games(create_game: Callable[[], Game], agents: List[Agent],
 
     for i in range(n_games):
         game = create_game()
-       
-        winners = play_game(game, agents)
+
+
+        if i % 2:
+
+            winners = play_game(game, [agents[0],agents[1]])
+        else:
+
+            winners = play_game(game,[agents[1],agents[0]])
+
         if len(winners) > 1:
             results.append(-1)
         else:

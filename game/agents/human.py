@@ -1,10 +1,7 @@
-# import random
-# import numpy as np
-# from tensorflow import keras
+
 from ..game import Agent, Game
 from ..tic_tac_toe import TicTacToeAction, agent_id_to_char, BOARD_DIM
 import tkinter as tk
-
 
 class Human(Agent):
 
