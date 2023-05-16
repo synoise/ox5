@@ -1,0 +1,24 @@
+{
+  "first_file": "\\MATRIX_first_13.05_Gross.h5",
+  "first_seed": 62,
+  "first_wins": [
+    657,
+    415
+  ],
+  "second_file": "\\MATRIX_second_13.05_Gross.h5",
+  "second_seed": 60,
+  "second_wins": [
+    753,
+    1032
+  ],
+  "remis": [
+    90,
+    53
+  ],
+  "epok": 3000,
+  "colors": [
+    "r",
+    "g",
+    "b"
+  ]
+}

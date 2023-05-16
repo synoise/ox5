@@ -5,7 +5,6 @@ BOARD_SIZE = 10
 tableSize = BOARD_SIZE ** 2
 
 
-
 def checkLines(boardDimension):
     tab = []
     # CHECK_LINES = [
@@ -130,17 +129,17 @@ def searchForDangerousAndWin2(agent, tab):
 
 
 def getCloestElement(cell, tab, agent):
-    result = searchForDangerousAndWin(-agent, tab)  # can win !
-    if result:
-        return (result, 8)
+    # result = searchForDangerousAndWin(-agent, tab)  # can win !
+    # if result:
+    #     return (result, 8)
 
     result = searchForDangerousAndWin(agent, tab)  # can loss !
     if result:
         return (result, 8)
 
-    result = searchForDangerousAndWin2(-agent, tab)  # can win
-    if result:
-        return (result, 4)
+    # result = searchForDangerousAndWin2(-agent, tab)  # can win
+    # if result:
+    #     return (result, 4)
 
     result = searchForDangerousAndWin2(agent, tab)  # can loss
     if result:

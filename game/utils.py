@@ -83,12 +83,16 @@ def moving_count(items: List[int], value: int, window: int) -> List[int]:
     return results
 
 
-def plot_game_results(results: List[int], num_agents: int, window: int = 100,paths=["none","none"],tura=""):
+def plot_game_results(results: List[int], num_agents: int, window: int = 100,paths=["none","none"],tura="",colors = ['r', 'g', 'b']):
     game_number = range(window, len(results) + 1)
     draws = moving_count(results, -1, window)
     winners = [moving_count(results, i, window) for i in range(num_agents)]
-    plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
-    # plt.rc('axes', prop_cycle=(cycler('color', ['b', 'purple', 'orange'])))
+
+    # if colors:
+    plt.rc('axes', prop_cycle=(cycler('color', colors)))
+    # else:
+    #     plt.rc('axes', prop_cycle=(cycler('color', ['b', 'purple', 'orange'])))
+
     plt.plot(game_number, draws, label='Remis')
     for i, winner in enumerate(winners, start=0):
         plt.plot(game_number, winner, label= 'Agent ' + str(i) + " :: " + agent_id_to_char(agent_signs[i]) + ' wins'+paths[i])

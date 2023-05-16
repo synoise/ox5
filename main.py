@@ -3,6 +3,7 @@
 # from game.agents.dqn_at_end import DQNAgentAtEnd
 from game.agents.dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
 from game.agents.dqn_end_matrix_end import DQNAgentEndMatrixEnd
+from game.save_stats import SaveStats
 # from game.agents.dqn_max_reward import DQNAgentMaxReward
 # from game.agents.human import Human
 # from game.agents.human import Human
@@ -12,8 +13,8 @@ from game.utils import play_games, plot_game_results
 
 # agent nagradzany tylko na końcu
 
-seed1 =28
-seed2 =28
+stats = SaveStats()
+seed1, seed2 = stats.loadStats('Agent_DQN_10N10_Stats.json')
 
 def initiateAgents():
     dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
@@ -29,7 +30,7 @@ def initiateAgents():
                                          reward_draw=50.,
                                          reward_win=100.,
                                          reward_loss=-100.,
-                                         randomizer=[True],
+                                         randomizer=[True,False],
                                          double_dqn=True,
                                          double_dqn_n_games=1,
                                          dueling_dqn=True,
@@ -48,7 +49,7 @@ def initiateAgents():
                                       reward_draw=50.,
                                       reward_win=100.,
                                       reward_loss=-100.,
-                                      randomizer=[True],
+                                      randomizer=[True,True,False],
                                       double_dqn=True,
                                       double_dqn_n_games=1,
                                       dueling_dqn=True,
@@ -91,31 +92,32 @@ def initiateAgents():
 # path_model2 = folder + model2
 
 folder = "D:\Xagents_DQN"
-model1 = '\MATRIX_first_13.05_Gross.h5'
-model2 = '\MATRIX_second_13.05_Gross.h5'
-path_model1 = folder + model1
-path_model2 = folder + model2
+first1 = '\MATRIX_first_13.05_Gross.h5'
+second2 = '\MATRIX_second_13.05_Gross.h5'
+path_first1 = folder + first1
+path_second2 = folder + second2
 
 for I in range(150):
     seed1+=1
 
-    del dqn_first
-    del dqn_second
 
     dqn_first, dqn_second = initiateAgents()
 
-    dqn_first.loadModel(path_model1)
-    dqn_second.loadModel(path_model2)
+    dqn_first.loadModel(path_first1)
+    dqn_second.loadModel(path_second2)
     dqn_first.model.summary()
     dqn_second.model.summary()
 
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1800, paths = [model1, model2], plot=True, debug=True)
+    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [first1, second2], plot=True, debug=True)
     print("kolejne epoki: " + str(I) + "   ----> seed1:"+ str(seed1) +" -  seed2:"+ str(seed2))
-    plot_game_results(results, 2, 100, [model1, model2], " _ " + str(I))
-
-    dqn_first.saveModel(path_model1)
-    dqn_second.saveModel(path_model2)
+    plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I))
+    stats.saveStats('Agent_DQN_10N10_Stats.json', seed1, first1, seed2, second2, results, 1500)
+    dqn_first.saveModel(path_first1)
+    dqn_second.saveModel(path_second2)
     seed2 += 1
+
+    del dqn_first
+    del dqn_second
 
 # Agent_second_MaxReward.h5 <- słaby
 # Agent_first__At_End.h5 <- dobry

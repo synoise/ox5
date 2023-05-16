@@ -375,14 +375,9 @@ class DQNAgent(Agent):
 
         if self.dueling_dqn:
             state_value = layers.Dense(1,kernel_initializer=keras.initializers.HeUniform(seed=self.seed))(layer)
-            state_value = layers.Lambda(lambda s: keras.backend.expand_dims(s[:, 0], -1),
-                                        output_shape=(self.n_actions,))(state_value)
-
-            action_advantage = layers.Dense(self.n_actions,
-                                            kernel_initializer=keras.initializers.HeUniform(seed=self.seed))(layer)
-            action_advantage = layers.Lambda(lambda a: a[:, :] - keras.backend.mean(a[:, :], keepdims=True),
-                                             output_shape=(self.n_actions,))(action_advantage)
-
+            state_value = layers.Lambda(lambda s: keras.backend.expand_dims(s[:, 0], -1), output_shape=(self.n_actions,))(state_value)
+            action_advantage = layers.Dense(self.n_actions,kernel_initializer=keras.initializers.HeUniform(seed=self.seed))(layer)
+            action_advantage = layers.Lambda(lambda a: a[:, :] - keras.backend.mean(a[:, :], keepdims=True),output_shape=(self.n_actions,))(action_advantage)
             layer = layers.Add()([state_value, action_advantage])
         else:
             layer = layers.Dense(self.n_actions,kernel_initializer=keras.initializers.HeUniform(seed=self.seed))(layer)
