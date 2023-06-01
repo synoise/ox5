@@ -1,9 +1,8 @@
 # from game.agents.human import Human
 # from game.agents.dqn_at_last import DQNAgentAtLast
-import gc
-
 from game.agents import DQNAgent
 from game.agents.dqn_at_end import DQNAgentAtEnd
+from game.agents.human import Human
 # from game.agents.dqn_max_reward import DQNAgentMaxReward
 # from game.agents.human import Human
 # from game.agents.human import Human
@@ -35,7 +34,7 @@ def initiateAgents():
                           reward_draw=50.,
                           reward_win=200.,
                           reward_loss=-100.,
-                          randomizer=[True,False],
+                          randomizer=[True],
                           double_dqn=True,
                           double_dqn_n_games=1,
                           dueling_dqn=True,
@@ -55,7 +54,7 @@ def initiateAgents():
                                 reward_draw=50.,
                                 reward_win=200.,
                                 reward_loss=-100.,
-                                randomizer=[True,False],
+                                randomizer=[True],
                                 double_dqn=True,
                                 double_dqn_n_games=1,
                                 dueling_dqn=True,
@@ -81,7 +80,7 @@ def initiateAgents():
 #                             double_dqn_n_games=1,
 #                             dueling_dqn=True,
 #                             seed=9)
-# human0 = Human(0)
+human0 = Human(0)
 # human1 = Human(1)
 # randomAgent = RandomAgent(1)
 folder = "D:\Xagents_DQN"
@@ -106,7 +105,7 @@ for I in range(150):
     dqn_first.model.summary()
     dqn_second.model.summary()
 
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths=[first1, second2], plot=True, debug=True)
+    results = play_games(lambda: TicTacToeGame(), [human0, dqn_second], 1500, paths=[first1, second2], plot=True, debug=True)
     print("kolejne epoki: " + str(I) + "  ----> seed1:" + str(seed1) + " -  seed2:" + str(seed2))
     plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I), stats.colors)
     dqn_first.saveModel(path_first1)
@@ -115,7 +114,6 @@ for I in range(150):
     stats.saveStats('Agent_DQN_Stats.json', seed1, first1, seed2, second2, results, 1500)
     del dqn_first
     del dqn_second
-    gc.collect()
 
 # Agent_second_MaxReward.h5 <- słaby
 # Agent_first__At_End.h5 <- dobry

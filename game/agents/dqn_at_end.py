@@ -6,6 +6,7 @@ class DQNAgentAtEnd(DQNAgent):
 
     def get_reward(self, game: TicTacToeGame, i_action=-1) -> float:
         if game.is_game_over():
+            self.reward1 = 0
             winners = game.get_winners()
             if len(winners) > 1:
                 return self.reward_draw

@@ -40,10 +40,8 @@ def play_games(create_game: Callable[[], Game], agents: List[Agent],
 
 
         if i % 2:
-
             winners = play_game(game, [agents[0],agents[1]])
         else:
-
             winners = play_game(game,[agents[1],agents[0]])
 
         if len(winners) > 1:

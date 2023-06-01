@@ -1,6 +1,6 @@
 import random
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
 from collections import deque
 # from tensorflow import keras
 from keras import layers
@@ -37,7 +37,8 @@ class DQNAgent(Agent):
                  reward_draw: float = 5.,
                  reward_win: float = 10.,
                  reward_loss: float = -10.,
-                 double_dqn=True, double_dqn_n_games=1,
+                 double_dqn=True,
+                 double_dqn_n_games=1,
                  dueling_dqn=True,
                  randomizer = [True, False],
                  seed=42):
@@ -112,6 +113,7 @@ class DQNAgent(Agent):
 
     def get_reward(self, game: TicTacToeGame, i_action=-1) -> float:
         if game.is_game_over():
+            self.reward1 = 0
             winners = game.get_winners()
             if len(winners) > 1:
                 return self.reward_draw
@@ -433,6 +435,7 @@ class DQNAgent(Agent):
             state, i_action = self.stage
             next_state = self.get_model_inputs(game).copy()
             self.reward1 = self.reward1 + self.get_reward(game, i_action) + self.award
+            # print(' self.reward1 ::', self.reward1)
             self.game_log.append((state, i_action, self.reward1, next_state, done))
             self.stage = None
 

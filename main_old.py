@@ -36,7 +36,7 @@ def initiateAgents():
                                          dueling_dqn=True,
                                          seed=seed1)
 
-    dqn_second1 = DQNAgentEndMatrixEnd(i_agent=1,
+    dqn_second1 = DQNAgentEndMatrixEnd(i_agent=0,
                                       is_learning=False,
                                       learning_rate=0.001,
                                       gamma=0.95,
@@ -108,7 +108,7 @@ for I in range(150):
     dqn_first.model.summary()
     dqn_second.model.summary()
 
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, human], 1800, paths = [model1, model2], plot=True, debug=True)
+    results = play_games(lambda: TicTacToeGame(), [dqn_second, human], 1800, paths = [model1, model2], plot=True, debug=True)
     print("kolejne epoki: " + str(I) + "   ----> seed1:"+ str(seed1) +" -  seed2:"+ str(seed2))
     plot_game_results(results, 2, 100, [model1, model2], " _ " + str(I))
 
