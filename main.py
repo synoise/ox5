@@ -92,7 +92,7 @@ def initiateAgents():
 # path_model1 = folder + model1
 # path_model2 = folder + model2
 
-folder = "D:\Xagents_DQN"
+folder = "\models"
 first1 = '\FIX_MATRIX_first_29.05_progres.h5'
 second2 = '\FIX_MATRIX_second_29.05_end.h5'
 path_first1 = folder + first1
@@ -109,9 +109,9 @@ for I in range(150):
     dqn_first.model.summary()
     dqn_second.model.summary()
 
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [first1, second2], plot=True, debug=True)
+    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [first1, second2], plot=False, debug=True)
     print("kolejne epoki: " + str(I) + "   ----> seed1:"+ str(seed1) +" -  seed2:"+ str(seed2))
-    plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I))
+    # plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I))
     stats.saveStats('fixed_DDQN_10N10x3_Stats.json', seed1, first1, seed2, second2, results, 1500)
     dqn_first.saveModel(path_first1)
     dqn_second.saveModel(path_second2)

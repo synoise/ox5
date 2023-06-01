@@ -19,7 +19,7 @@ seed1, seed2 = stats.loadStats('fixed_DDQN_10N10x3_Stats.json')
 
 def initiateAgents():
     dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
-                                         is_learning=True,
+                                         is_learning=False,
                                          learning_rate=0.0001,
                                          gamma=0.99,
                                          epsilon=0.6,
@@ -38,7 +38,7 @@ def initiateAgents():
                                          seed=seed1)
 
     dqn_second1 = DQNAgentEndMatrixEnd(i_agent=1,
-                                      is_learning=True,
+                                      is_learning=False,
                                       learning_rate=0.001,
                                       gamma=0.95,
                                       epsilon=0.6,
