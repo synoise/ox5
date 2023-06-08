@@ -92,18 +92,15 @@ def initiateAgents():
 # path_model1 = folder + model1
 # path_model2 = folder + model2
 
-folder = "\models"
-first1 = '\FIX_MATRIX_first_29.05_progres.h5'
-second2 = '\FIX_MATRIX_second_29.05_end.h5'
+folder = "./model/"
+first1 = 'FIX_MATRIX_first_08.06_progres.h5'
+second2 = 'FIX_MATRIX_second_08.06_end.h5'
 path_first1 = folder + first1
 path_second2 = folder + second2
 
 for I in range(150):
     seed1+=1
-
-
     dqn_first, dqn_second = initiateAgents()
-
     dqn_first.loadModel(path_first1)
     dqn_second.loadModel(path_second2)
     dqn_first.model.summary()
