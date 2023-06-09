@@ -15,7 +15,7 @@ import gc
 # agent nagradzany tylko na końcu
 
 stats = SaveStats()
-seed1, seed2 = stats.loadStats('fixed_DDQN_10N10x3_Stats.json')
+seed1, seed2 = stats.loadStats('./stats/fixed_DDQN_10N10x3_Stats.json')
 
 def initiateAgents():
     dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
