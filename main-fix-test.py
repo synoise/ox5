@@ -15,7 +15,7 @@ import gc
 # agent nagradzany tylko na końcu
 
 stats = SaveStats()
-seed1, seed2 = stats.loadStats('fixed_DDQN_10N10x3_Stats.json')
+seed1, seed2 = stats.loadStats('./stats/fixed_DDQN_10N10x3_Stats.json')
 
 def initiateAgents():
     dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
@@ -75,7 +75,7 @@ def initiateAgents():
     #                             double_dqn_n_games=1,
     #                             dueling_dqn=True,
     #                             seed=9)
-human = Human(0)
+human = Human(1)
     # randomAgent = RandomAgent(1)
 
     # model2 = '\Agent_first_08.05_At_End.h5'
@@ -92,9 +92,9 @@ human = Human(0)
 # path_model1 = folder + model1
 # path_model2 = folder + model2
 
-folder = "D:\Xagents_DQN"
-first1 = '\FIX_MATRIX_first_29.05_progres.h5'
-second2 = '\FIX_MATRIX_second_29.05_end.h5'
+folder = ".\model"
+first1 = '\FIX_MATRIX_first_08.06_progres.h5'
+second2 = '\FIX_MATRIX_second_08.06_end.h5'
 path_first1 = folder + first1
 path_second2 = folder + second2
 
@@ -109,10 +109,10 @@ for I in range(150):
     dqn_first.model.summary()
     dqn_second.model.summary()
 
-    results = play_games(lambda: TicTacToeGame(), [human, dqn_second], 1500, paths = [first1, second2], plot=True, debug=True)
+    results = play_games(lambda: TicTacToeGame(), [human, dqn_first], 1500, paths = [first1, second2], plot=True, debug=True)
     print("kolejne epoki: " + str(I) + "   ----> seed1:"+ str(seed1) +" -  seed2:"+ str(seed2))
     plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I))
-    stats.saveStats('fixed_DDQN_10N10x3_Stats.json', seed1, first1, seed2, second2, results, 1500)
+    stats.saveStats('./stats/fixed_DDQN_10N10x3_Stats.json', seed1, first1, seed2, second2, results, 1500)
     dqn_first.saveModel(path_first1)
     dqn_second.saveModel(path_second2)
     seed2 += 1

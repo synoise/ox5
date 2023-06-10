@@ -85,7 +85,7 @@ class SaveStats:
         pass
 
 
-ss = SaveStats()
+# ss = SaveStats()
 # ss.printStats(param='..\Agent_DQN_Stats.json')
 # ss.printStats(param='..\Agent_DQN_10N10_Stats.json')
-# ss.printStats(param='..\\fixed_DDQN_10N10x3_Stats.json')
+# ss.printStats(param='../Fixed_DDQN_10N10x3_Stats.json')
