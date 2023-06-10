@@ -31,7 +31,7 @@ def initiateAgents():
                                          reward_draw=500.,
                                          reward_win=100.,
                                          reward_loss=-100.,
-                                         randomizer=[True,False,True,False,False],
+                                         randomizer=[True],
                                          double_dqn=True,
                                          double_dqn_n_games=1,
                                          dueling_dqn=True,
