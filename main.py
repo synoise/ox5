@@ -50,7 +50,7 @@ def initiateAgents():
                                       reward_draw=500.,
                                       reward_win=100.,
                                       reward_loss=-100.,
-                                      randomizer=[True,False,True,False,False],
+                                      randomizer=[False],
                                       double_dqn=True,
                                       double_dqn_n_games=1,
                                       dueling_dqn=True,
@@ -109,7 +109,7 @@ for I in range(150):
     results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [first1, second2], plot=False, debug=True)
     print("kolejne epoki: " + str(I) + "   ----> seed1:"+ str(seed1) +" -  seed2:"+ str(seed2))
     # plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I))
-    stats.saveStats('fixed_DDQN_10N10x3_Stats.json', seed1, first1, seed2, second2, results, 1500)
+    stats.saveStats('./stats/fixed_DDQN_10N10x3_Stats.json', seed1, first1, seed2, second2, results, 1500)
     dqn_first.saveModel(path_first1)
     dqn_second.saveModel(path_second2)
     seed2 += 1
