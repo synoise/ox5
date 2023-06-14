@@ -120,7 +120,7 @@ class DQNAgent(Agent):
             else:
                 return self.reward_loss
         else:
-            return award2(game.board.tolist(), i_action,game.board[i_action] ) + 1e-20
+            return award2(game.board.tolist(), i_action,game.board[i_action] ) #+ 1e-20
 
     # def mini(self,N, mi):
     #     if N >= mi + BOARD_DIM:
