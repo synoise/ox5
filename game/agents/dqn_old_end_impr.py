@@ -1,6 +1,6 @@
 
 
-from game.agents.dqn_old_impr import DQNAtemp
+# from game.agents.dqn_old_impr import DQNAtemp
 from .dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
 
 from ..tic_tac_toe import TicTacToeGame

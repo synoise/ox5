@@ -4,6 +4,7 @@ from ..tic_tac_toe import TicTacToeGame, BOARD_DIM
 from keras import layers
 from ..tools import BOARD_SIZE
 import tensorflow as tf
+from keras.layers import Conv2D
 
 n_in_channels = 3
 n_conv_layers = 8
