@@ -2,9 +2,10 @@
 # from game.agents.dqn_at_last import DQNAgentAtLast
 # from game.agents.dqn_at_end import DQNAgentAtEnd
 from game.agents.dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
-from game.agents.dqn_end_matrix_end import DQNAgentEndMatrixEnd
 from game.agents.dqn_old_end_impr import DQNAtempEnd
-from game.agents.dqn_old_impr import DQNAtemp
+# from game.agents.dqn_end_matrix_end import DQNAgentEndMatrixEnd
+# from game.agents.dqn_old_end_impr import DQNAtempEnd
+# from game.agents.dqn_old_impr import DQNAtemp
 from game.save_stats import SaveStats
 # from game.agents.dqn_max_reward import DQNAgentMaxReward
 
@@ -20,7 +21,7 @@ stats = SaveStats()
 seed1, seed2 = stats.loadStats('./stats/Agent_DQN_10N10_Stats.json')
 
 def initiateAgents():
-    dqn_first1 = DQNAtemp(i_agent=0,
+    dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
                                          is_learning=True,
                                          learning_rate=0.0001,
                                          gamma=0.99,
@@ -28,7 +29,7 @@ def initiateAgents():
                                          epsilon_end=0.0001,
                                          epsilon_decay_linear=1 / 3000,
                                          experience_replay_batch_size=64,
-                                         pre_training_games=500,
+                                         pre_training_games=50,
                                          memory_size=50000,
                                          reward_draw=50.,
                                          reward_win=100.,
@@ -47,7 +48,7 @@ def initiateAgents():
                                       epsilon_end=0.0001,
                                       epsilon_decay_linear=0.0001,
                                       experience_replay_batch_size=64,
-                                      pre_training_games=500,
+                                      pre_training_games=50,
                                       memory_size=50000,
                                       reward_draw=50.,
                                       reward_win=100.,
@@ -78,7 +79,7 @@ for I in range(150):
     dqn_first.model.summary()
     dqn_second.model.summary()
 
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [first1, second2], plot=True, debug=True)
+    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [first1, second2], plot=False, debug=True)
     print("kolejne epoki: " + str(I) + "   ----> seed1:"+ str(seed1) +" -  seed2:"+ str(seed2))
     plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I))
     stats.saveStats('./stats/Agent_DQN_10N10_Stats.json', seed1, first1, seed2, second2, results, 1500)

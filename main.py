@@ -1,8 +1,10 @@
 # from game.agents.human import Human
 # from game.agents.dqn_at_last import DQNAgentAtLast
 # from game.agents.dqn_at_end import DQNAgentAtEnd
-from game.agents.dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
-from game.agents.dqn_end_matrix_end import DQNAgentEndMatrixEnd
+from game.agents.double_dqn_end_matrix_end import DoubleDQNAgentEndMatrixEnd
+from game.agents.double_dqn_matrix10_max_reward import DoubleDQNAgentMatrixMaxReward
+# from game.agents.dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
+# from game.agents.dqn_end_matrix_end import DQNAgentEndMatrixEnd
 from game.save_stats import SaveStats
 # from game.agents.dqn_max_reward import DQNAgentMaxReward
 # from game.agents.human import Human
@@ -18,7 +20,7 @@ stats = SaveStats()
 seed1, seed2 = stats.loadStats('./stats/fixed_DDQN_10N10x3_Stats.json')
 
 def initiateAgents():
-    dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
+    dqn_first1 = DoubleDQNAgentMatrixMaxReward(i_agent=0,
                                          is_learning=True,
                                          learning_rate=0.0001,
                                          gamma=0.9,
@@ -37,7 +39,7 @@ def initiateAgents():
                                          dueling_dqn=True,
                                          seed=seed1)
 
-    dqn_second1 = DQNAgentEndMatrixEnd(i_agent=1,
+    dqn_second1 = DoubleDQNAgentEndMatrixEnd(i_agent=1,
                                       is_learning=True,
                                       learning_rate=0.001,
                                       gamma=0.99,

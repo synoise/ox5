@@ -1,6 +1,7 @@
 
 
 from game.agents.dqn_old_impr import DQNAtemp
+from .dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
 
 from ..tic_tac_toe import TicTacToeGame
 
@@ -10,7 +11,7 @@ from ..tic_tac_toe import TicTacToeGame
 #  Agent DQN z nagrodą cząstkowoą i siecią 10:10:
 
 
-class DQNAtempEnd(DQNAtemp):
+class DQNAtempEnd(DQNAgentMatrixMaxReward):
 
     def get_reward(self, game: TicTacToeGame, i_action=-1) -> float:
         if game.is_game_over():
