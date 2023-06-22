@@ -8,19 +8,19 @@ from game.agents.dqn_old_end_impr import DQNAtempEnd
 # from game.agents.dqn_old_impr import DQNAtemp
 from game.save_stats import SaveStats
 # from game.agents.dqn_max_reward import DQNAgentMaxReward
-
 # from game.agents.human import Human
 from game.tic_tac_toe import TicTacToeGame
 from game.utils import play_games, plot_game_results
 # from game.agents import RandomAgent, DQNAgent
 import gc
 
-import tensorflow as tf
-tf.config.experimental.set_visible_devices([], 'GPU')
 # agent nagradzany tylko na końcu
 
 stats = SaveStats()
 seed1, seed2 = stats.loadStats('./stats/Agent_DQN_10N10_Stats.json')
+
+import tensorflow as tf
+tf.config.experimental.set_visible_devices([], 'GPU')
 
 def initiateAgents():
     dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
@@ -31,7 +31,7 @@ def initiateAgents():
                                          epsilon_end=0.0001,
                                          epsilon_decay_linear=1 / 3000,
                                          experience_replay_batch_size=64,
-                                         pre_training_games=5,
+                                         pre_training_games=500,
                                          memory_size=50000,
                                          reward_draw=50.,
                                          reward_win=100.,
@@ -50,7 +50,7 @@ def initiateAgents():
                                       epsilon_end=0.0001,
                                       epsilon_decay_linear=0.0001,
                                       experience_replay_batch_size=64,
-                                      pre_training_games=5,
+                                      pre_training_games=500,
                                       memory_size=50000,
                                       reward_draw=50.,
                                       reward_win=100.,
@@ -81,10 +81,10 @@ for I in range(150):
     dqn_first.model.summary()
     dqn_second.model.summary()
 
-    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 10, paths = [first1, second2], plot=False, debug=True)
+    results = play_games(lambda: TicTacToeGame(), [dqn_first, dqn_second], 1500, paths = [first1, second2], plot=False, debug=True)
     print("kolejne epoki: " + str(I) + "   ----> seed1:"+ str(seed1) +" -  seed2:"+ str(seed2))
     plot_game_results(results, 2, 100, [first1, second2], " _ " + str(I))
-    stats.saveStats('./stats/Agent_DQN_10N10_Stats.json', seed1, first1, seed2, second2, results, 10)
+    stats.saveStats('./stats/Agent_DQN_10N10_Stats.json', seed1, first1, seed2, second2, results, 1500)
     dqn_first.saveModel(path_first1)
     dqn_second.saveModel(path_second2)
     seed2 += 1
