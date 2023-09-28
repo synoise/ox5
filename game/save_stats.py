@@ -59,8 +59,8 @@ class SaveStats:
 
     def printStats(self, param):
         self.loadStats(param)
-        game_number = range(0, self.epok, 1500)
-        # game_number = range(0, len(self.first_wins))
+        # game_number = range(0, self.epok, 1500)
+        game_number = range(0, len(self.first_wins))
         plt.rc('axes', prop_cycle=(cycler('color',  self.colors)))
 
         plt.plot(game_number, self.remis, label= "remis :: " + str(sum(self.remis)))
@@ -87,5 +87,5 @@ class SaveStats:
 
 # ss = SaveStats()
 # ss.printStats(param='..\Agent_DQN_Stats.json')
-# ss.printStats(param='..\Agent_DQN_10N10_Stats.json')
-# ss.printStats(param='../Fixed_DDQN_10N10x3_Stats.json')
+# ss.printStats(param='..\stats\Agent_DQN_10N10_Stats.json')
+# ss.printStats(param='..\Fixed_DDQN_10N10x3_Stats.json')
