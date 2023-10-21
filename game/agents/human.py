@@ -55,4 +55,6 @@ class Human(Agent):
                 self.buttonsX[x][y]["text"] = agent_id_to_char(game.board[x*BOARD_DIM+y])
         self.root.wait_variable(self.okVar)
         action = TicTacToeAction(self.i_agent, self.action)
+
+
         return game.next(action)

@@ -86,8 +86,12 @@ class TicTacToeAction(Action):
         self.position = position
 
     def is_legal(self, game: 'TicTacToeGame') -> bool:
-        assert game.board[self.position] == GamePlayer.EMPTY
-        return game.board[self.position] == GamePlayer.EMPTY
+        # try:
+            assert game.board[self.position] == GamePlayer.EMPTY
+            return game.board[self.position] == GamePlayer.EMPTY
+        # except:
+        #     assert game.board[self.position//10][self.position%10] == GamePlayer.EMPTY
+        # return game.board[self.position//10][self.position%10] == GamePlayer.EMPTY
 
     def run(self, game: 'TicTacToeGame'):
         assert self.is_legal(game)

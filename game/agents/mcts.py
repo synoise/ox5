@@ -13,8 +13,7 @@ from tensorflow import keras
 
 from ..tools import getCloestElement
 from ..utils import agent_signs
-
-#=
+#
 # from tensorflow.keras import layers
 
 
@@ -27,6 +26,7 @@ class MCSTAgent(Agent):
         self.num_simulations = num_simulations
         self.c_puct = c_puct
         self.temperature = temperature
+
         self.root_node = MCTSNode()
 
     def loadModel(self, path):
