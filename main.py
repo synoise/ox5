@@ -1,6 +1,7 @@
 # from game.agents.human import Human
 # from game.agents.dqn_at_last import DQNAgentAtLast
 # from game.agents.dqn_at_end import DQNAgentAtEnd
+from game.agents.double_dqn_matrix10_max_reward import DoubleDQNAgentMatrixMaxReward
 from game.agents.dqn_matrix10_max_reward import DQNAgentMatrixMaxReward
 from game.agents.dqn_old_end_impr import DQNAtempEnd
 # from game.agents.mcts import MCSTAgent
@@ -25,7 +26,25 @@ seed1, seed2 = stats.loadStats('./stats/Agent_DQN_10N10_Stats.json')
 tf.config.experimental.set_visible_devices([], 'GPU')
 
 # def initiateAgents():
-    # dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
+dqn_second = DoubleDQNAgentMatrixMaxReward(i_agent=1,
+                                         is_learning=True,
+                                         learning_rate=0.0001,
+                                         gamma=0.99,
+                                         epsilon=0.6,
+                                         epsilon_end=0.0001,
+                                         epsilon_decay_linear=1 / 3000,
+                                         experience_replay_batch_size=64,
+                                         pre_training_games=500,
+                                         memory_size=50000,
+                                         reward_draw=50.,
+                                         reward_win=100.,
+                                         reward_loss=-100.,
+                                         randomizer=[False],
+                                         double_dqn=True,
+                                         double_dqn_n_games=1,
+                                         dueling_dqn=True,
+                                         seed=seed1)
+# dqn_first1 = DQNAgentMatrixMaxReward(i_agent=0,
     #                                      is_learning=False,
     #                                      learning_rate=0.0001,
     #                                      gamma=0.99,
@@ -66,10 +85,10 @@ tf.config.experimental.set_visible_devices([], 'GPU')
     # return dqn_first1, dqn_second2
 
 human = Human(0)
-dqn_second = ABPruning(1)
+# dqn_second = ABPruning(1)
 folder = "./models_"
-first1 = '/MATRIX_first_13.05_Gross.h5'
-second2 = '/MATRIX_second_13.05_Gross.h5'
+first1 = '/FIX_MATRIX_first_08.06_progres.h5'
+second2 = '/FIX_MATRIX_first_08.06_progres.h5'
 path_first1 = folder + first1
 path_second2 = folder + second2
 

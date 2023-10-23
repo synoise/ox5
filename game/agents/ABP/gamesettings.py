@@ -16,8 +16,8 @@ COM = -1
 #
 def get_opponent(player):
     if player == 1:
-        return 2
-    if player == 2:
+        return -1
+    if player == -1:
         return 1
 #
 # # TURN
