@@ -1,0 +1,32 @@
+{
+  "first_file": "new-first_10.24_progres.keras",
+  "first_seed": 4,
+  "first_wins": [
+    0,
+    0,
+    0
+  ],
+  "second_file": "noni",
+  "second_seed": 4,
+  "second_wins": [
+    1500,
+    1500,
+    1500
+  ],
+  "remis": [
+    0,
+    0,
+    0
+  ],
+  "time": [
+    "07:34  24-10",
+    "11:52  24-10",
+    "16:23  24-10"
+  ],
+  "epok": 4500,
+  "colors": [
+    "r",
+    "g",
+    "b"
+  ]
+}

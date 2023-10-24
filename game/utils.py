@@ -21,7 +21,7 @@ def play_game(game: Game, agents: List[Agent]) -> List[int]:
     for agent in agents:
         agent.end_game(game)
 
-    print("first",agents[0])
+    # print("first",agents[0])
     print(game.__str__())
 
     return game.get_winners()

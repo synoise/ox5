@@ -432,7 +432,8 @@ class DQNAgent(Agent):
         if self.is_learning and self.stage != None:
             state, i_action = self.stage
             next_state = self.get_model_inputs(game).copy()
-            self.reward1 = self.reward1 + self.get_reward(game, i_action) + self.award
+            self.reward1 = self.reward1 + self.get_reward(game, i_action) #+ self.award
+            print(self.reward1)
             self.game_log.append((state, i_action, self.reward1, next_state, done))
             self.stage = None
 
